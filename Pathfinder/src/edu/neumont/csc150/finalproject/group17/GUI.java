@@ -101,15 +101,14 @@ public class GUI extends JPanel {
 					classPanel.setPreferredSize(new Dimension(2400, 100));
 					reference.add(classPanel);
 					amount++;
+					if ((int)multiClass.getSelectedItem() != amount) {
+						reference.remove(classPanel);
+						amount--;
+					}
 //					container.add(new JLabel("Test"));
 //					System.out.println("Testing");
 					reference.validate();
 				}				
-				while ((int)multiClass.getSelectedItem() < amount) {
-					reference.remove(classPanel);
-					reference.remove(classPanel);
-					amount--;
-				}
 			}
 		});
 		
