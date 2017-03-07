@@ -59,7 +59,6 @@ public class Classes extends JPanel {
 		this.add(characterLevel);
 		
 		this.setBackground(Color.LIGHT_GRAY);
-		this.setVisible(true);
 		
 	}
 	

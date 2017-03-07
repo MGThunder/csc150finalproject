@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -43,9 +44,9 @@ public class GUI extends JPanel {
 	
 	ButtonGroup rollOrInput = new ButtonGroup();
 	
-	Font f = new Font("Times New Roman", Font.BOLD, 40); 
+	Classes[] classArray = new Classes[]{new Classes(), new Classes(), new Classes(), new Classes()};
 	
-	int amount = 0;
+	Font f = new Font("Times New Roman", Font.BOLD, 40); 
 
 	public static void main(String[] args) {
 		GUI nonStaticHelper = new GUI();
@@ -90,25 +91,33 @@ public class GUI extends JPanel {
 //		classPanel.setPreferredSize(new Dimension(2400, 500));
 		
 		reference.setBackground(Color.LIGHT_GRAY);
+		for (int i = 0; i < classArray.length; i++) {
+			reference.add(classArray[i]);
+			classArray[i].setPreferredSize(new Dimension(1500, 100));
+			if (i > 0) {
+				classArray[i].setVisible(false);
+			}
+		}
 		
 		multiClass.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Classes classPanel = null;
+				int amount = 4;
 				for (int i = 0; i < (int)multiClass.getSelectedItem(); i++) {
-					classPanel = new Classes();
-					classPanel.setPreferredSize(new Dimension(2400, 100));
-					reference.add(classPanel);
-					amount++;
-					if ((int)multiClass.getSelectedItem() != amount) {
-						reference.remove(classPanel);
+					
+					classArray[i].setVisible(true);
+					
+					while ((int)multiClass.getSelectedItem() != amount && amount > (int)multiClass.getSelectedItem()) {
+//						reference.remove(classPanel);
 						amount--;
+						classArray[amount].setVisible(false);
 					}
 //					container.add(new JLabel("Test"));
 //					System.out.println("Testing");
 					reference.validate();
-				}				
+				}	
+				reference.setLayout(new BoxLayout(reference, BoxLayout.Y_AXIS));
 			}
 		});
 		
