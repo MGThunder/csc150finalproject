@@ -1,11 +1,14 @@
 package edu.neumont.csc150.finalproject.group17;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class GUI extends JPanel {
 	
 	ButtonGroup rollOrInput = new ButtonGroup();
 	
+	JScrollBar vBar = new JScrollBar(JScrollBar.VERTICAL, 30, 40, 0 ,300);
+	
 	Classes[] classArray = new Classes[]{new Classes(), new Classes(), new Classes(), new Classes()};
 	
 	Font f = new Font("Times New Roman", Font.BOLD, 40); 
@@ -79,8 +84,20 @@ public class GUI extends JPanel {
 		multiClass.setPreferredSize(new Dimension(100, 100));
 		multiClass.setFont(f);
 		
+		vBar.setPreferredSize(new Dimension(20, 3000));
+		vBar.addAdjustmentListener(new AdjustmentListener() {
+			
+			@Override
+			public void adjustmentValueChanged(AdjustmentEvent e) {
+				repaint();
+				
+			}
+		});
+		
 		frame.add(this);
 		this.add(container);
+//		this.add(vBar, BorderLayout.EAST);
+		container.add(vBar, BorderLayout.EAST);
 		container.add(characterName);
 		container.add(alignment);
 		container.add(playerName);
@@ -97,6 +114,7 @@ public class GUI extends JPanel {
 			if (i > 0) {
 				classArray[i].setVisible(false);
 			}
+//			classArray[i].setBackground(Color.BLACK);
 		}
 		
 		multiClass.addActionListener(new ActionListener() {
@@ -117,7 +135,7 @@ public class GUI extends JPanel {
 //					System.out.println("Testing");
 					reference.validate();
 				}	
-				reference.setLayout(new BoxLayout(reference, BoxLayout.Y_AXIS));
+//				reference.setLayout(new BoxLayout(reference, BoxLayout.Y_AXIS));
 			}
 		});
 		
