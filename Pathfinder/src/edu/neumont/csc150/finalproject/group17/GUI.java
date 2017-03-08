@@ -36,6 +36,7 @@ public class GUI extends JPanel {
 	JLabel raceLabel = new JLabel("Race: ");
 	JLabel size = new JLabel("Size: " + getCharacterSize());
 	JLabel multiClassLabel = new JLabel("<html>Amount of <br>Classes</html>");
+	JLabel ageLabel = new JLabel("Age");
 
 	JButton ageRoll = new JButton("Age");
 
@@ -124,6 +125,9 @@ public class GUI extends JPanel {
 		ageRange.add(intuitive);
 		ageRange.add(selfTaught);
 		ageRange.add(trained);
+		
+		ageLabel.setPreferredSize(new Dimension(100, 100));
+		ageLabel.setFont(f);
 
 		intuitive.setPreferredSize(new Dimension(350, 100));
 		intuitive.setFont(f);
@@ -198,9 +202,10 @@ public class GUI extends JPanel {
 		container2.add(gender);
 		container2.add(roll);
 		container2.add(input);
-		
+
+		//Checks to see if the roll JRadioButton has been selected
 		roll.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (roll.isSelected()) {
@@ -212,51 +217,32 @@ public class GUI extends JPanel {
 					reference.validate();
 					reference.repaint();
 				}
+				//Checks if the Age JButton has been pressed
 				ageRoll.addActionListener(new ActionListener() {
-					
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						intuitive.addActionListener(new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (intuitive.isSelected()) {
-									age = getAgeRoll(true, false, false);
-								}
-							}
-						});
-						
-						selfTaught.addActionListener(new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (selfTaught.isSelected()) {
-									age = getAgeRoll(false, true, false);
-								} 
-							}
-						});
-						trained.addActionListener(new ActionListener() {
-							
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (trained.isSelected()) {
-									age = getAgeRoll(false, false, true);
-								}
-							}
-						});
+						age = getAgeRoll(intuitive.isSelected(), selfTaught.isSelected(), trained.isSelected());
+						container2.add(ageLabel);
 						container2.add(ageInput);
+						container2.remove(roll);
+						container2.remove(input);
+						container2.remove(intuitive);
+						container2.remove(selfTaught);
+						container2.remove(trained);
+						container2.remove(ageRoll);
 						ageInput.setText(String.valueOf(age));
 						reference.validate();
 						reference.repaint();
 					}
-					
+
 				});
-				
+
 			}
 		});
 
 		input.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (input.isSelected()) {
@@ -270,7 +256,6 @@ public class GUI extends JPanel {
 				}
 			}
 		});
-		
 
 		frame.pack();
 		frame.setVisible(true);
@@ -307,59 +292,81 @@ public class GUI extends JPanel {
 
 		if (dropDownText.equals(Races.DWARF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.DWARF.getIntuitiveDiceAmount(), Races.DWARF.getIntuitiveDiceSides());
+				result = setAgeResult(Races.DWARF.getIntuitiveDiceAmount(), Races.DWARF.getIntuitiveDiceSides())
+						+ Races.DWARF.getBaseAge();
+				System.out.println(result);
 			} else if (selfTaught) {
-				result = setAgeResult(Races.DWARF.getSelfTaughtDiceAmount(), Races.DWARF.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.DWARF.getSelfTaughtDiceAmount(), Races.DWARF.getSelfTaughtDiceSides())
+						+ Races.DWARF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.DWARF.getTrainedDiceAmount(), Races.DWARF.getTrainedDiceSides());
+				result = setAgeResult(Races.DWARF.getTrainedDiceAmount(), Races.DWARF.getTrainedDiceSides())
+						+ Races.DWARF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.ELF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.ELF.getIntuitiveDiceAmount(), Races.ELF.getIntuitiveDiceSides());
+				result = setAgeResult(Races.ELF.getIntuitiveDiceAmount(), Races.ELF.getIntuitiveDiceSides())
+						+ Races.ELF.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.ELF.getSelfTaughtDiceAmount(), Races.ELF.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.ELF.getSelfTaughtDiceAmount(), Races.ELF.getSelfTaughtDiceSides())
+						+ Races.ELF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.ELF.getTrainedDiceAmount(), Races.ELF.getTrainedDiceSides());
+				result = setAgeResult(Races.ELF.getTrainedDiceAmount(), Races.ELF.getTrainedDiceSides())
+						+ Races.ELF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.GNOME)) {
 			if (intuitive) {
-				result = setAgeResult(Races.GNOME.getIntuitiveDiceAmount(), Races.GNOME.getIntuitiveDiceSides());
+				result = setAgeResult(Races.GNOME.getIntuitiveDiceAmount(), Races.GNOME.getIntuitiveDiceSides())
+						+ Races.GNOME.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.GNOME.getSelfTaughtDiceAmount(), Races.GNOME.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.GNOME.getSelfTaughtDiceAmount(), Races.GNOME.getSelfTaughtDiceSides())
+						+ Races.GNOME.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.GNOME.getTrainedDiceAmount(), Races.GNOME.getTrainedDiceSides());
+				result = setAgeResult(Races.GNOME.getTrainedDiceAmount(), Races.GNOME.getTrainedDiceSides())
+						+ Races.GNOME.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFELF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFELF.getIntuitiveDiceAmount(), Races.HALFELF.getIntuitiveDiceSides());
+				result = setAgeResult(Races.HALFELF.getIntuitiveDiceAmount(), Races.HALFELF.getIntuitiveDiceSides())
+						+ Races.HALFELF.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFELF.getSelfTaughtDiceAmount(), Races.HALFELF.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.HALFELF.getSelfTaughtDiceAmount(), Races.HALFELF.getSelfTaughtDiceSides())
+						+ Races.HALFELF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFELF.getTrainedDiceAmount(), Races.HALFELF.getTrainedDiceSides());
+				result = setAgeResult(Races.HALFELF.getTrainedDiceAmount(), Races.HALFELF.getTrainedDiceSides())
+						+ Races.HALFELF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFORC)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFORC.getIntuitiveDiceAmount(), Races.HALFORC.getIntuitiveDiceSides());
+				result = setAgeResult(Races.HALFORC.getIntuitiveDiceAmount(), Races.HALFORC.getIntuitiveDiceSides())
+						+ Races.HALFORC.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFORC.getSelfTaughtDiceAmount(), Races.HALFORC.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.HALFORC.getSelfTaughtDiceAmount(), Races.HALFORC.getSelfTaughtDiceSides())
+						+ Races.HALFORC.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFORC.getTrainedDiceAmount(), Races.HALFORC.getTrainedDiceSides());
+				result = setAgeResult(Races.HALFORC.getTrainedDiceAmount(), Races.HALFORC.getTrainedDiceSides())
+						+ Races.HALFORC.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFLING)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFLING.getIntuitiveDiceAmount(), Races.HALFLING.getIntuitiveDiceSides());
+				result = setAgeResult(Races.HALFLING.getIntuitiveDiceAmount(), Races.HALFLING.getIntuitiveDiceSides())
+						+ Races.HALFLING.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFLING.getSelfTaughtDiceAmount(), Races.HALFLING.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.HALFLING.getSelfTaughtDiceAmount(), Races.HALFLING.getSelfTaughtDiceSides())
+						+ Races.HALFLING.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFLING.getTrainedDiceAmount(), Races.HALFLING.getTrainedDiceSides());
+				result = setAgeResult(Races.HALFLING.getTrainedDiceAmount(), Races.HALFLING.getTrainedDiceSides())
+						+ Races.HALFLING.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HUMAN)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HUMAN.getIntuitiveDiceAmount(), Races.HUMAN.getIntuitiveDiceSides());
+				result = setAgeResult(Races.HUMAN.getIntuitiveDiceAmount(), Races.HUMAN.getIntuitiveDiceSides())
+						+ Races.HUMAN.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HUMAN.getSelfTaughtDiceAmount(), Races.HUMAN.getSelfTaughtDiceSides());
+				result = setAgeResult(Races.HUMAN.getSelfTaughtDiceAmount(), Races.HUMAN.getSelfTaughtDiceSides())
+						+ Races.HUMAN.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HUMAN.getTrainedDiceAmount(), Races.HUMAN.getTrainedDiceSides());
+				result = setAgeResult(Races.HUMAN.getTrainedDiceAmount(), Races.HUMAN.getTrainedDiceSides())
+						+ Races.HUMAN.getBaseAge();
 			}
 		}
 
