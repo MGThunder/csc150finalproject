@@ -3,18 +3,71 @@ package edu.neumont.csc150.finalproject.group17;
 public enum Races {
 
 	/*
-	 * (Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma, "" =
-	 * languages, age roll 1, age roll 2, age roll 3, base age, base male
-	 * height, base female height, height roll, weight roll, base male weight,
-	 * base female weight
+	 * strength, dexterity, constitution, intelligence, wisdom, charisma, 
+	 * baseSpeed, size, languages,
+	 * intuitiveDiceAmount, selfTaughtDiceAmount, trainedDiceAmount,
+	 * intuitiveDiceSides, selfTaughtDiceSides, trainedDiceSides, base age,
+	 * base male height, base female height, 
+	 * heightDiceAmount, male height dice sides, female height dice sides,
+	 * weight roll, male weight dice sides, female weight dice sides,
+	 * base male weight, base female weight
 	 */
-	DWARF(0, 0, 2, 0, 2, -2, 20, "Medium", new String[] { "Common", "Dwarven" }, 3, 5, 7, 6, 6, 6, 40, 45, 43, 2, 2, 150,120), 
-	ELF(0, 2, -2, 2, 0, 0, 30, "Medium", new String[] { "Common", "Elven" }, 4, 6, 10, 6, 6, 6, 110, 64, 64, 2, 2,110, 90), 
-	GNOME(-2, 0, 2, 0, 0, 2, 20, "Small", new String[] { "Common", "Gnome", "Sylvan" }, 3, 6, 9, 6, 6, 6, 40, 36, 34, 2, 2, 35, 30), 
-	HALFELF(0, 0, 0, 0, 0, 0, 30, "Medium", new String[] { "Common", "Elven" }, 1, 2, 3, 6, 6, 6, 20, 62, 60, 2, 2, 100, 90), 
-	HALFORC(0, 0, 0, 0, 0, 0, 30, "Medium", new String[] { "Common", "Orc" }, 1, 1, 2, 4, 6, 6, 14, 58, 53, 2, 2, 150, 110), 
-	HALFLING(-2, 2, 0, 0, 0, 2, 20, "Small", new String[] { "Common", "Halfling" }, 2, 3, 4, 4, 6, 6, 20, 32, 30, 2, 2, 30, 25), 
-	HUMAN(0, 0, 0, 0, 0, 0, 30, "Medium", new String[] { "Common" }, 1, 1, 2, 4, 6, 6, 15, 58, 53, 2, 2, 120, 85);
+	DWARF(0, 0, 2, 0, 2, -2, 
+			20, "Medium", new String[] { "Common", "Dwarven" }, 
+			3, 5, 7, 
+			6, 6, 6, 40, 
+			45, 43, 
+			2, 4, 4,
+			2, 4, 4,
+			150, 120), 
+	ELF(0, 2, -2, 2, 0, 0, 
+			30,	"Medium", new String[] { "Common", "Elven" },
+			4, 6, 10, 
+			6, 6, 6, 110,
+			64, 64, 
+			2, 8, 6, 
+			2, 8, 6,
+			110, 90), 
+	GNOME(-2, 0, 2, 0, 0, 2, 
+			20, "Small", new String[] { "Common", "Gnome", "Sylvan" },
+			3, 6, 9, 
+			6, 6, 6, 40,
+			36, 34, 
+			2, 4, 4, 
+			2, 4, 4,
+			35, 30), 
+	HALFELF(0, 0, 0, 0, 0, 0, 
+			30, "Medium", new String[] { "Common", "Elven" },
+			1, 2, 3, 
+			6, 6, 6, 20,
+			62, 60, 
+			2, 8, 8, 
+			2, 8, 8, 
+			100, 90), 
+	HALFORC(0, 0, 0, 0, 0, 0, 
+			30, "Medium",	new String[] { "Common", "Orc" },
+			1, 1, 2, 
+			4, 6, 6, 14,
+			58, 53, 
+			2, 12, 12,
+			2, 12, 12,
+			150, 110), 
+	HALFLING(-2, 2, 0, 0, 0, 2, 
+			20, "Small", new String[] { "Common", "Halfling" },
+			2, 3, 4, 
+			4, 6, 6, 20,
+			32, 30,
+			2, 4, 4, 
+			2, 4, 4,
+			30, 25), 
+	HUMAN(0, 0, 0, 0, 0, 0, 
+			30, "Medium", new String[] { "Common" },
+			1, 1, 2, 
+			4, 6, 6, 15,
+			58, 53, 
+			2, 10, 10,
+			2, 10, 10,
+			120, 85);
 
 	public int getStrength() {
 		return strength;
@@ -91,9 +144,25 @@ public enum Races {
 	public int getHeightDiceAmount() {
 		return heightDiceAmount;
 	}
+	
+	public int getMaleHeightDiceSides() {
+		return maleHeightDiceSides;
+	}
+
+	public int getFemaleHeightDiceSides() {
+		return femaleHeightDiceSides;
+	}
 
 	public int getWeightDiceAmount() {
 		return weightDiceAmount;
+	}
+	
+	public int getMaleWeightDiceSides() {
+		return maleWeightDiceSides;
+	}
+
+	public int getFemaleWeightDiceSides() {
+		return femaleWeightDiceSides;
 	}
 
 	public int getBaseMaleWeight() {
@@ -123,15 +192,22 @@ public enum Races {
 	private int baseMaleHeight;
 	private int baseFemaleHeight;
 	private int heightDiceAmount;
+	private int maleHeightDiceSides;
+	private int femaleHeightDiceSides;
 	private int weightDiceAmount;
+	private int maleWeightDiceSides;
+	private int femaleWeightDiceSides;
 	private int baseMaleWeight;
 	private int baseFemaleWeight;
 
 	private Races(int strength, int dexterity, int constitution, int intelligence, int wisdom, int charisma,
-			int baseSpeed, String size, String[] languages, int intuitiveDiceAmount, int selfTaughtDiceAmount,
-			int trainedDiceAmount, int intuitiveDiceSides, int selfTaughtDiceSides, int trainedDiceSides, 
-			int baseAge, int baseMaleHeight, int baseFemaleHeight, int heightDiceAmount,
-			int weightDiceAmount, int baseMaleWeight, int baseFemaleWeight) {
+			int baseSpeed, String size, String[] languages, 
+			int intuitiveDiceAmount, int selfTaughtDiceAmount, int trainedDiceAmount, 
+			int intuitiveDiceSides, int selfTaughtDiceSides, int trainedDiceSides, int baseAge, 
+			int baseMaleHeight, int baseFemaleHeight, 
+			int heightDiceAmount, int maleHeightDiceSides, int femaleHeightDiceSides,
+			int weightDiceAmount, int maleWeightDiceSides, int femaleWeightDiceSides,
+			int baseMaleWeight, int baseFemaleWeight) {
 		this.strength = strength;
 		this.dexterity = dexterity;
 		this.constitution = constitution;
@@ -151,7 +227,11 @@ public enum Races {
 		this.baseMaleHeight = baseMaleHeight;
 		this.baseFemaleHeight = baseFemaleHeight;
 		this.heightDiceAmount = heightDiceAmount;
+		this.maleHeightDiceSides = maleHeightDiceSides;
+		this.femaleHeightDiceSides = femaleHeightDiceSides;
 		this.weightDiceAmount = weightDiceAmount;
+		this.maleWeightDiceSides = maleWeightDiceSides;
+		this.femaleWeightDiceSides = femaleWeightDiceSides;
 		this.baseMaleWeight = baseMaleWeight;
 		this.baseFemaleWeight = baseFemaleWeight;
 	}

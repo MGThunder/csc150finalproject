@@ -20,16 +20,18 @@ public class GUI extends JPanel {
 	JFrame frame = new JFrame("Pathfinder Character Sheet");
 
 	JPanel container = new JPanel();
-	JPanel container2 = new JPanel();
+	JPanel agePanel = new JPanel();
+	JPanel heightPanel = new JPanel();
 
 	JTextField characterName = new JTextField("Character Name");
 	JTextField alignment = new JTextField("Alignment");
 	JTextField playerName = new JTextField("Player Name");
 	JTextField deity = new JTextField("Deity");
 	JTextField homeland = new JTextField("Homeland");
-	JTextField gender = new JTextField("Gender");
 	JTextField ageInput = new JTextField("Age");
+	JTextField heightInput = new JTextField("Weight");
 
+	JComboBox<String> gender = new JComboBox<>(new String[] {"Female", "Male"});
 	JComboBox<Enum> race = new JComboBox<>(Races.values());
 	JComboBox<Integer> multiClass = new JComboBox<>(new Integer[] { 1, 2, 3, 4 });
 
@@ -37,17 +39,23 @@ public class GUI extends JPanel {
 	JLabel size = new JLabel("Size: " + getCharacterSize());
 	JLabel multiClassLabel = new JLabel("<html>Amount of <br>Classes</html>");
 	JLabel ageLabel = new JLabel("Age");
+	JLabel heightLabel = new JLabel("Weight");
+	JLabel genderLabel = new JLabel("Gender");
 
 	JButton ageRoll = new JButton("Age");
+	JButton heightRoll= new JButton("Height");
 
-	JRadioButton roll = new JRadioButton("Roll");
-	JRadioButton input = new JRadioButton("Input");
+	JRadioButton ageRollSelection = new JRadioButton("Roll Age");
+	JRadioButton ageInputSelection = new JRadioButton("Input Age");
 	JRadioButton intuitive = new JRadioButton("Intuitive (Young)");
 	JRadioButton selfTaught = new JRadioButton("Self-Taught (Middle)");
 	JRadioButton trained = new JRadioButton("Trained (Older)");
+	JRadioButton heightRollSelection = new JRadioButton("Roll Height");
+	JRadioButton heightInputSelection = new JRadioButton("Input Height");
 
-	ButtonGroup rollOrInput = new ButtonGroup();
+	ButtonGroup ageRollOrInput = new ButtonGroup();
 	ButtonGroup ageRange = new ButtonGroup();
+	ButtonGroup heightRollOrInput = new ButtonGroup();
 
 	Classes[] classArray = new Classes[] { new Classes(), new Classes(), new Classes(), new Classes() };
 
@@ -58,6 +66,7 @@ public class GUI extends JPanel {
 	Font f = new Font("Times New Roman", Font.BOLD, 40);
 
 	int age;
+	int height;
 
 	public static void main(String[] args) {
 		GUI nonStaticHelper = new GUI();
@@ -71,14 +80,16 @@ public class GUI extends JPanel {
 		JPanel reference = this;
 
 		container.setBackground(Color.LIGHT_GRAY);
-		container.setPreferredSize(new Dimension(2400, 150));
+		container.setPreferredSize(new Dimension(2400, 120));
 
-		container2.setBackground(Color.LIGHT_GRAY);
-		container2.setPreferredSize(new Dimension(2400, 1000));
+		agePanel.setBackground(Color.LIGHT_GRAY);
+		agePanel.setPreferredSize(new Dimension(2400, 120));
+		
+		heightPanel.setBackground(Color.LIGHT_GRAY);
+		heightPanel.setPreferredSize(new Dimension(2400, 120));
 
 		characterName.setPreferredSize(new Dimension(1050, 100));
 		characterName.setFont(f);
-		// characterName.setHorizontalAlignment();
 
 		alignment.setPreferredSize(new Dimension(400, 100));
 		alignment.setFont(f);
@@ -102,19 +113,22 @@ public class GUI extends JPanel {
 		size.setPreferredSize(new Dimension(250, 100));
 		size.setFont(f);
 
-		gender.setPreferredSize(new Dimension(150, 100));
+		gender.setPreferredSize(new Dimension(200, 100));
 		gender.setFont(f);
+		
+		genderLabel.setPreferredSize(new Dimension(150, 100));
+		genderLabel.setFont(f);
 
-		rollOrInput.add(roll);
-		rollOrInput.add(input);
+		ageRollOrInput.add(ageRollSelection);
+		ageRollOrInput.add(ageInputSelection);
 
-		roll.setPreferredSize(new Dimension(100, 100));
-		roll.setFont(f);
-		roll.setBackground(Color.LIGHT_GRAY);
+		ageRollSelection.setPreferredSize(new Dimension(200, 100));
+		ageRollSelection.setFont(f);
+		ageRollSelection.setBackground(Color.LIGHT_GRAY);
 
-		input.setPreferredSize(new Dimension(140, 100));
-		input.setFont(f);
-		input.setBackground(Color.LIGHT_GRAY);
+		ageInputSelection.setPreferredSize(new Dimension(240, 100));
+		ageInputSelection.setFont(f);
+		ageInputSelection.setBackground(Color.LIGHT_GRAY);
 
 		ageRoll.setPreferredSize(new Dimension(150, 100));
 		ageRoll.setFont(f);
@@ -125,8 +139,8 @@ public class GUI extends JPanel {
 		ageRange.add(intuitive);
 		ageRange.add(selfTaught);
 		ageRange.add(trained);
-		
-		ageLabel.setPreferredSize(new Dimension(100, 100));
+
+		ageLabel.setPreferredSize(new Dimension(75, 100));
 		ageLabel.setFont(f);
 
 		intuitive.setPreferredSize(new Dimension(350, 100));
@@ -137,6 +151,24 @@ public class GUI extends JPanel {
 
 		trained.setPreferredSize(new Dimension(350, 100));
 		trained.setFont(f);
+		
+		heightRollOrInput.add(heightInputSelection);
+		heightRollOrInput.add(heightRollSelection);
+		
+		heightInputSelection.setPreferredSize(new Dimension(300, 100));
+		heightInputSelection.setFont(f);
+		
+		heightRollSelection.setPreferredSize(new Dimension(300, 100));
+		heightRollSelection.setFont(f);
+		
+		heightRoll.setPreferredSize(new Dimension(150, 100));
+		heightRoll.setFont(f);
+		
+		heightInput.setPreferredSize(new Dimension(150, 100));
+		heightInput.setFont(f);
+		
+		heightLabel.setPreferredSize(new Dimension(150, 100));
+		heightLabel.setFont(f);
 
 		// scrollBar.setPreferredSize(new Dimension(20, 500));
 
@@ -195,42 +227,45 @@ public class GUI extends JPanel {
 			}
 		});
 
-		this.add(container2);
-		container2.add(raceLabel);
-		container2.add(race);
-		container2.add(size);
-		container2.add(gender);
-		container2.add(roll);
-		container2.add(input);
+		this.add(agePanel);
+		this.add(heightPanel);
+		agePanel.add(raceLabel);
+		agePanel.add(race);
+		agePanel.add(size);
+		agePanel.add(genderLabel);
+		agePanel.add(gender);
+		agePanel.add(ageRollSelection);
+		agePanel.add(ageInputSelection);
 
-		//Checks to see if the roll JRadioButton has been selected
-		roll.addActionListener(new ActionListener() {
+		// Checks to see if the roll JRadioButton has been selected
+		ageRollSelection.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (roll.isSelected()) {
-					container2.remove(ageInput);
-					container2.add(intuitive);
-					container2.add(selfTaught);
-					container2.add(trained);
-					container2.add(ageRoll);
+				if (ageRollSelection.isSelected()) {
+					agePanel.setPreferredSize(new Dimension(2400, 220));
+					agePanel.remove(ageInput);
+					agePanel.add(intuitive);
+					agePanel.add(selfTaught);
+					agePanel.add(trained);
+					agePanel.add(ageRoll);
 					reference.validate();
 					reference.repaint();
 				}
-				//Checks if the Age JButton has been pressed
+				// Checks if the Age JButton has been pressed
 				ageRoll.addActionListener(new ActionListener() {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						age = getAgeRoll(intuitive.isSelected(), selfTaught.isSelected(), trained.isSelected());
-						container2.add(ageLabel);
-						container2.add(ageInput);
-						container2.remove(roll);
-						container2.remove(input);
-						container2.remove(intuitive);
-						container2.remove(selfTaught);
-						container2.remove(trained);
-						container2.remove(ageRoll);
+						agePanel.add(ageLabel);
+						agePanel.add(ageInput);
+						agePanel.remove(ageRollSelection);
+						agePanel.remove(ageInputSelection);
+						agePanel.remove(intuitive);
+						agePanel.remove(selfTaught);
+						agePanel.remove(trained);
+						agePanel.remove(ageRoll);
 						ageInput.setText(String.valueOf(age));
 						reference.validate();
 						reference.repaint();
@@ -241,22 +276,64 @@ public class GUI extends JPanel {
 			}
 		});
 
-		input.addActionListener(new ActionListener() {
+		ageInputSelection.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (input.isSelected()) {
-					container2.remove(intuitive);
-					container2.remove(selfTaught);
-					container2.remove(trained);
-					container2.remove(ageRoll);
-					container2.add(ageInput);
+				if (ageInputSelection.isSelected()) {
+					agePanel.remove(intuitive);
+					agePanel.remove(selfTaught);
+					agePanel.remove(trained);
+					agePanel.remove(ageRoll);
+					agePanel.add(ageInput);
 					reference.validate();
 					reference.repaint();
 				}
 			}
 		});
 
+		heightPanel.add(heightRollSelection);
+		heightPanel.add(heightInputSelection);
+		
+		heightRollSelection.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (heightRollSelection.isSelected()) {
+					heightPanel.add(heightRoll);
+					heightPanel.remove(heightInput);
+					reference.validate();
+					reference.repaint();
+				}
+				heightRoll.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						height = getHeightRoll();
+						heightPanel.add(heightLabel);
+						heightPanel.add(heightInput);
+						heightPanel.remove(heightInputSelection);
+						heightPanel.remove(heightRoll);
+						heightPanel.remove(heightRollSelection);
+						heightInput.setText(String.valueOf(height));
+						reference.validate();
+						reference.repaint();
+					}
+				});
+			}
+		});
+		
+		heightInputSelection.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				heightPanel.add(heightInput);
+				heightPanel.remove(heightRoll);
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -287,93 +364,156 @@ public class GUI extends JPanel {
 
 	public int getAgeRoll(boolean intuitive, boolean selfTaught, boolean trained) {
 		int result = 0;
-
 		Races dropDownText = (Races) race.getSelectedItem();
 
 		if (dropDownText.equals(Races.DWARF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.DWARF.getIntuitiveDiceAmount(), Races.DWARF.getIntuitiveDiceSides())
+				result = setRollResult(Races.DWARF.getIntuitiveDiceAmount(), Races.DWARF.getIntuitiveDiceSides())
 						+ Races.DWARF.getBaseAge();
-				System.out.println(result);
 			} else if (selfTaught) {
-				result = setAgeResult(Races.DWARF.getSelfTaughtDiceAmount(), Races.DWARF.getSelfTaughtDiceSides())
+				result = setRollResult(Races.DWARF.getSelfTaughtDiceAmount(), Races.DWARF.getSelfTaughtDiceSides())
 						+ Races.DWARF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.DWARF.getTrainedDiceAmount(), Races.DWARF.getTrainedDiceSides())
+				result = setRollResult(Races.DWARF.getTrainedDiceAmount(), Races.DWARF.getTrainedDiceSides())
 						+ Races.DWARF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.ELF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.ELF.getIntuitiveDiceAmount(), Races.ELF.getIntuitiveDiceSides())
+				result = setRollResult(Races.ELF.getIntuitiveDiceAmount(), Races.ELF.getIntuitiveDiceSides())
 						+ Races.ELF.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.ELF.getSelfTaughtDiceAmount(), Races.ELF.getSelfTaughtDiceSides())
+				result = setRollResult(Races.ELF.getSelfTaughtDiceAmount(), Races.ELF.getSelfTaughtDiceSides())
 						+ Races.ELF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.ELF.getTrainedDiceAmount(), Races.ELF.getTrainedDiceSides())
+				result = setRollResult(Races.ELF.getTrainedDiceAmount(), Races.ELF.getTrainedDiceSides())
 						+ Races.ELF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.GNOME)) {
 			if (intuitive) {
-				result = setAgeResult(Races.GNOME.getIntuitiveDiceAmount(), Races.GNOME.getIntuitiveDiceSides())
+				result = setRollResult(Races.GNOME.getIntuitiveDiceAmount(), Races.GNOME.getIntuitiveDiceSides())
 						+ Races.GNOME.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.GNOME.getSelfTaughtDiceAmount(), Races.GNOME.getSelfTaughtDiceSides())
+				result = setRollResult(Races.GNOME.getSelfTaughtDiceAmount(), Races.GNOME.getSelfTaughtDiceSides())
 						+ Races.GNOME.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.GNOME.getTrainedDiceAmount(), Races.GNOME.getTrainedDiceSides())
+				result = setRollResult(Races.GNOME.getTrainedDiceAmount(), Races.GNOME.getTrainedDiceSides())
 						+ Races.GNOME.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFELF)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFELF.getIntuitiveDiceAmount(), Races.HALFELF.getIntuitiveDiceSides())
+				result = setRollResult(Races.HALFELF.getIntuitiveDiceAmount(), Races.HALFELF.getIntuitiveDiceSides())
 						+ Races.HALFELF.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFELF.getSelfTaughtDiceAmount(), Races.HALFELF.getSelfTaughtDiceSides())
+				result = setRollResult(Races.HALFELF.getSelfTaughtDiceAmount(), Races.HALFELF.getSelfTaughtDiceSides())
 						+ Races.HALFELF.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFELF.getTrainedDiceAmount(), Races.HALFELF.getTrainedDiceSides())
+				result = setRollResult(Races.HALFELF.getTrainedDiceAmount(), Races.HALFELF.getTrainedDiceSides())
 						+ Races.HALFELF.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFORC)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFORC.getIntuitiveDiceAmount(), Races.HALFORC.getIntuitiveDiceSides())
+				result = setRollResult(Races.HALFORC.getIntuitiveDiceAmount(), Races.HALFORC.getIntuitiveDiceSides())
 						+ Races.HALFORC.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFORC.getSelfTaughtDiceAmount(), Races.HALFORC.getSelfTaughtDiceSides())
+				result = setRollResult(Races.HALFORC.getSelfTaughtDiceAmount(), Races.HALFORC.getSelfTaughtDiceSides())
 						+ Races.HALFORC.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFORC.getTrainedDiceAmount(), Races.HALFORC.getTrainedDiceSides())
+				result = setRollResult(Races.HALFORC.getTrainedDiceAmount(), Races.HALFORC.getTrainedDiceSides())
 						+ Races.HALFORC.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HALFLING)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HALFLING.getIntuitiveDiceAmount(), Races.HALFLING.getIntuitiveDiceSides())
+				result = setRollResult(Races.HALFLING.getIntuitiveDiceAmount(), Races.HALFLING.getIntuitiveDiceSides())
 						+ Races.HALFLING.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HALFLING.getSelfTaughtDiceAmount(), Races.HALFLING.getSelfTaughtDiceSides())
+				result = setRollResult(Races.HALFLING.getSelfTaughtDiceAmount(), Races.HALFLING.getSelfTaughtDiceSides())
 						+ Races.HALFLING.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HALFLING.getTrainedDiceAmount(), Races.HALFLING.getTrainedDiceSides())
+				result = setRollResult(Races.HALFLING.getTrainedDiceAmount(), Races.HALFLING.getTrainedDiceSides())
 						+ Races.HALFLING.getBaseAge();
 			}
 		} else if (dropDownText.equals(Races.HUMAN)) {
 			if (intuitive) {
-				result = setAgeResult(Races.HUMAN.getIntuitiveDiceAmount(), Races.HUMAN.getIntuitiveDiceSides())
+				result = setRollResult(Races.HUMAN.getIntuitiveDiceAmount(), Races.HUMAN.getIntuitiveDiceSides())
 						+ Races.HUMAN.getBaseAge();
 			} else if (selfTaught) {
-				result = setAgeResult(Races.HUMAN.getSelfTaughtDiceAmount(), Races.HUMAN.getSelfTaughtDiceSides())
+				result = setRollResult(Races.HUMAN.getSelfTaughtDiceAmount(), Races.HUMAN.getSelfTaughtDiceSides())
 						+ Races.HUMAN.getBaseAge();
 			} else if (trained) {
-				result = setAgeResult(Races.HUMAN.getTrainedDiceAmount(), Races.HUMAN.getTrainedDiceSides())
+				result = setRollResult(Races.HUMAN.getTrainedDiceAmount(), Races.HUMAN.getTrainedDiceSides())
 						+ Races.HUMAN.getBaseAge();
 			}
 		}
+		return result;
+	}
+	
+	public int getHeightRoll() {
+		int result = 0;
+		Races racesDropDownText = (Races) race.getSelectedItem();
+		String stringDropDownText = (String) gender.getSelectedItem();
 
+		if (racesDropDownText.equals(Races.DWARF)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.DWARF.getHeightDiceAmount(), Races.DWARF.getFemaleHeightDiceSides()) +
+						Races.DWARF.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.DWARF.getHeightDiceAmount(), Races.DWARF.getMaleHeightDiceSides()) +
+						Races.DWARF.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.ELF)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.ELF.getHeightDiceAmount(), Races.ELF.getFemaleHeightDiceSides()) +
+						Races.ELF.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.DWARF.getHeightDiceAmount(), Races.DWARF.getMaleHeightDiceSides()) +
+						Races.ELF.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.GNOME)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.GNOME.getHeightDiceAmount(), Races.GNOME.getFemaleHeightDiceSides()) +
+						Races.GNOME.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.GNOME.getHeightDiceAmount(), Races.GNOME.getMaleHeightDiceSides()) +
+						Races.GNOME.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.HALFELF)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.HALFELF.getHeightDiceAmount(), Races.HALFELF.getFemaleHeightDiceSides()) +
+						Races.HALFELF.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.HALFELF.getHeightDiceAmount(), Races.HALFELF.getMaleHeightDiceSides()) +
+						Races.HALFELF.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.HALFORC)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.HALFORC.getHeightDiceAmount(), Races.HALFORC.getFemaleHeightDiceSides()) +
+						Races.HALFORC.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.HALFORC.getHeightDiceAmount(), Races.HALFORC.getMaleHeightDiceSides()) +
+						Races.HALFORC.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.HALFLING)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.HALFLING.getHeightDiceAmount(), Races.HALFLING.getFemaleHeightDiceSides()) +
+						Races.HALFLING.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.HALFLING.getHeightDiceAmount(), Races.HALFLING.getMaleHeightDiceSides()) +
+						Races.HALFLING.getBaseMaleHeight();
+			}
+		} else if (racesDropDownText.equals(Races.HUMAN)) {
+			if (stringDropDownText.equals("Female")) {
+				result = setRollResult(Races.HUMAN.getHeightDiceAmount(), Races.HUMAN.getFemaleHeightDiceSides()) +
+						Races.HUMAN.getBaseFemaleHeight();
+			} else if (stringDropDownText.equals("Male")) {
+				result = setRollResult(Races.HUMAN.getHeightDiceAmount(), Races.HUMAN.getMaleHeightDiceSides()) +
+						Races.HUMAN.getBaseMaleHeight();
+			}
+		}
+		
 		return result;
 	}
 
-	public int setAgeResult(int diceAmount, int diceSides) {
+	public int setRollResult(int diceAmount, int diceSides) {
 		int result = 0;
 		for (int i = 0; i < diceAmount; i++) {
 			result += diceBag.rollDice(diceSides);
