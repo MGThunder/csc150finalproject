@@ -58,7 +58,6 @@ public class Classes extends JPanel {
 		this.add(levelLabel);
 		this.add(characterLevel);
 		
-		this.setBackground(Color.LIGHT_GRAY);
 		
 	}
 	
