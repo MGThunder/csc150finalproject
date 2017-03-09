@@ -23,7 +23,10 @@ public class GUI extends JPanel {
 	JPanel weightPanel = new JPanel();
 	JPanel hairPanel = new JPanel();
 	JPanel eyePanel = new JPanel();
-	JPanel abilityPanel = new JPanel();
+	JPanel abilitySelectionPanel = new JPanel();
+	JPanel physicalAbilityPanel = new JPanel();
+	JPanel mentalAbilityPanel = new JPanel();
+	JPanel reference = this;
 
 	JTextField characterName = new JTextField("Character Name");
 	JTextField alignment = new JTextField("Alignment");
@@ -69,6 +72,18 @@ public class GUI extends JPanel {
 	JLabel charismaLabel = new JLabel("<html>Cha<br>Charisma</html>");
 	JLabel fantasyPointsLabel = new JLabel();
 	JLabel freePointsLavel = new JLabel();
+	JLabel strengthModifierLabel = new JLabel();
+	JLabel dexterityModifierLabel = new JLabel();
+	JLabel constitutionModifierLabel = new JLabel();
+	JLabel intelligenceModifierLabel = new JLabel();
+	JLabel wisdomModifierLabel = new JLabel();
+	JLabel charismaModifierLabel = new JLabel();
+	JLabel strengthTemporaryModifierLabel = new JLabel();
+	JLabel dexterityTemporaryModifierLabel = new JLabel();
+	JLabel constitutionTemporaryModifierLabel = new JLabel();
+	JLabel intelligenceTemporaryModifierLabel = new JLabel();
+	JLabel wisdomTemporaryModifierLabel = new JLabel();
+	JLabel charismaTemporaryModifierLabel = new JLabel();
 
 	JButton ageRoll = new JButton("Age");
 	JButton heightRoll = new JButton("Height");
@@ -128,6 +143,8 @@ public class GUI extends JPanel {
 	// ScrollBarPanel scrollBar = new ScrollBarPanel();
 
 	Font f = new Font("Times New Roman", Font.BOLD, 40);
+	
+	Color lightGray = new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB());
 
 	int age;
 	int height;
@@ -138,6 +155,12 @@ public class GUI extends JPanel {
 	int intelligence;
 	int wisdom;
 	int charisma;
+	int temporaryStrength;
+	int temporaryDexterity;
+	int temporaryConstitution;
+	int temporaryIntelligence;
+	int temporaryWisdom;
+	int temporaryCharisma;
 	int fantasyPoints;
 	int freePoints;
 
@@ -152,41 +175,367 @@ public class GUI extends JPanel {
 			levelRange[i] = i + 1;
 		}
 		
+		setPanels();
+		
 		characterLevel = new JComboBox[] { new JComboBox<>(levelRange), new JComboBox<>(levelRange),
 				new JComboBox<>(levelRange), new JComboBox<>(levelRange)};
 
-		frame.setPreferredSize(new Dimension(3000, 2000));
+		setSwingCharacteristics();
 
-		JPanel reference = this;
+		// scrollBar.setPreferredSize(new Dimension(20, 500));
 
-		container.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		container.setPreferredSize(new Dimension(2300, 120));
+		frame.add(this);
+		this.add(container);
+		// this.add(scrollBar, BorderLayout.EAST);
+		container.add(characterName);
+		container.add(alignment);
+		container.add(playerName);
+		container.add(multiClassLabel);
+		container.add(multiClass);
 
-		agePanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
+		multiClass.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				multiClassActionPerform();
+			}
+		});
+
+		race.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				size.setText("Size: " + getCharacterSize());
+
+			}
+		});
+
+		this.add(agePanel);
+		this.add(heightPanel);
+		this.add(weightPanel);
+		this.add(hairPanel);
+		this.add(eyePanel);
+		this.add(abilitySelectionPanel);
+		agePanel.add(raceLabel);
+		agePanel.add(race);
+		agePanel.add(size);
+		agePanel.add(genderLabel);
+		agePanel.add(gender);
+		agePanel.add(ageRollSelection);
+		agePanel.add(ageInputSelection);
+
+		// Checks to see if the roll JRadioButton has been selected
+		ageRollSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ageRollSelectionActionPerform();
+
+			}
+		});
+
+		ageInputSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ageInputSelectionActionPerform();
+			}
+		});
+
+		heightPanel.add(heightRollSelection);
+		heightPanel.add(heightInputSelection);
+
+		heightRollSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				heightRollSelectionActionPerform();
+			}
+		});
+
+		heightInputSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				heightPanel.add(heightInput);
+				heightPanel.remove(heightRoll);
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		weightPanel.add(weightRollSelection);
+		weightPanel.add(weightInputSelection);
+
+		weightRollSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				weightRollSelectionActionPerform();
+			}
+		});
+
+		weightInputSelection.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				weightPanel.add(weightInput);
+				weightPanel.remove(weightRoll);
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		race.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				raceActionPerform();
+			}
+		});
+
+		gender.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				genderActionPerform();
+			}
+		});
+
+		hairPanel.add(hairLabel);
+		hairPanel.add(hairColor);
+
+		hairColor.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Colors currentColor = (Colors) hairColor.getSelectedItem();
+				hairPanel.setBackground(
+						new Color(currentColor.getColorR(), currentColor.getColorG(), currentColor.getColorB()));
+			}
+		});
+
+		eyePanel.add(eyeLabel);
+		eyePanel.add(eyeColor);
+
+		eyeColor.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Colors currentColor = (Colors) eyeColor.getSelectedItem();
+				eyePanel.setBackground(
+						new Color(currentColor.getColorR(), currentColor.getColorG(), currentColor.getColorB()));
+
+			}
+		});
+
+		abilitySelectionPanel.add(abilityInput);
+		abilitySelectionPanel.add(abilityRoll);
+		
+		abilityInput.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+
+		reference.setBackground(lightGray);
+		reference.setForeground(lightGray);
+
+		frame.pack();
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private void genderActionPerform() {
+		heightPanel.remove(heightRoll);
+		heightPanel.remove(heightInput);
+		heightPanel.remove(heightLabel);
+		heightPanel.add(heightRollSelection);
+		heightPanel.add(heightInputSelection);
+		weightPanel.remove(weightRoll);
+		weightPanel.remove(weightInput);
+		weightPanel.remove(weightLabel);
+		weightPanel.add(weightRollSelection);
+		weightPanel.add(weightInputSelection);
+		reference.validate();
+		reference.repaint();
+		
+	}
+	
+	private void raceActionPerform() {
+		agePanel.remove(ageInput);
+		agePanel.remove(ageLabel);
+		agePanel.remove(ageRoll);
+		agePanel.remove(intuitive);
+		agePanel.remove(selfTaught);
+		agePanel.remove(trained);
+		agePanel.add(ageRollSelection);
+		agePanel.add(ageInputSelection);
 		agePanel.setPreferredSize(new Dimension(2400, 120));
+		heightPanel.remove(heightRoll);
+		heightPanel.remove(heightInput);
+		heightPanel.remove(heightLabel);
+		heightPanel.add(heightRollSelection);
+		heightPanel.add(heightInputSelection);
+		weightPanel.remove(weightRoll);
+		weightPanel.remove(weightInput);
+		weightPanel.remove(weightLabel);
+		weightPanel.add(weightRollSelection);
+		weightPanel.add(weightInputSelection);
+		reference.validate();
+		reference.repaint();
+		
+	}
+	
+	private void weightRollSelectionActionPerform() {
+		if (weightRollSelection.isSelected()) {
+			weightPanel.add(weightRoll);
+			weightPanel.remove(weightInput);
+			reference.validate();
+			reference.repaint();
+		}
+		weightRoll.addActionListener(new ActionListener() {
 
-		heightPanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		heightPanel.setPreferredSize(new Dimension(1200, 120));
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				weight = getWeightRoll();
+				weightPanel.add(weightLabel);
+				weightPanel.add(weightInput);
+				weightPanel.remove(weightInputSelection);
+				weightPanel.remove(weightRoll);
+				weightPanel.remove(weightRollSelection);
+				weightInput.setText(String.valueOf(weight));
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		
+	}
+	
+	private void heightRollSelectionActionPerform() {
+		if (heightRollSelection.isSelected()) {
+			heightPanel.add(heightRoll);
+			heightPanel.remove(heightInput);
+			reference.validate();
+			reference.repaint();
+		}
+		heightRoll.addActionListener(new ActionListener() {
 
-		weightPanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		weightPanel.setPreferredSize(new Dimension(850, 120));
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				height = getHeightRoll();
+				heightPanel.add(heightLabel);
+				heightPanel.add(heightInput);
+				heightPanel.remove(heightInputSelection);
+				heightPanel.remove(heightRoll);
+				heightPanel.remove(heightRollSelection);
+				heightInput.setText(String.valueOf(height / 12 + "'" + height % 12));
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		
+	}
+	
+	private void ageInputSelectionActionPerform() {
+		if (ageInputSelection.isSelected()) {
+			agePanel.remove(intuitive);
+			agePanel.remove(selfTaught);
+			agePanel.remove(trained);
+			agePanel.remove(ageRoll);
+			agePanel.add(ageInput);
+			reference.validate();
+			reference.repaint();
+		}
+		ageInput.addActionListener(new ActionListener() {
 
-		hairPanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		hairPanel.setPreferredSize(new Dimension(900, 120));
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				agePanel.add(ageLabel);
+				agePanel.remove(ageInputSelection);
+				agePanel.remove(ageRollSelection);
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		
+	}
+	
+	private void ageRollSelectionActionPerform() {
+		if (ageRollSelection.isSelected()) {
+			agePanel.setPreferredSize(new Dimension(2400, 220));
+			agePanel.remove(ageInput);
+			agePanel.add(intuitive);
+			agePanel.add(selfTaught);
+			agePanel.add(trained);
+			agePanel.add(ageRoll);
+			reference.validate();
+			reference.repaint();
+		}
+		// Checks if the Age JButton has been pressed
+		ageRoll.addActionListener(new ActionListener() {
 
-		eyePanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		eyePanel.setPreferredSize(new Dimension(900, 120));
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				age = getAgeRoll(intuitive.isSelected(), selfTaught.isSelected(), trained.isSelected());
+				agePanel.setPreferredSize(new Dimension(2400, 120));
+				agePanel.add(ageLabel);
+				agePanel.add(ageInput);
+				agePanel.remove(ageRollSelection);
+				agePanel.remove(ageInputSelection);
+				agePanel.remove(intuitive);
+				agePanel.remove(selfTaught);
+				agePanel.remove(trained);
+				agePanel.remove(ageRoll);
+				ageInput.setText(String.valueOf(age));
+				reference.validate();
+				reference.repaint();
+			}
 
-		abilityPanel.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		abilityPanel.setPreferredSize(new Dimension(2400, 420));
+		});
+	}
+	
+	private void multiClassActionPerform() {
+		int amount = 4;
+		
+		Integer multiClasses = (Integer) multiClass.getSelectedItem();
+		for (int i = 0; i < multiClasses; i++) {
+			
+			characterClass[i].setPreferredSize(new Dimension(1000, 100));
+			characterClass[i].setFont(f);
+			
+			characterLevel[i].setPreferredSize(new Dimension(500, 100));
+			characterLevel[i].setFont(f);
+			
+			classLabel[i].setPreferredSize(new Dimension(300, 100));
+			classLabel[i].setFont(f);
+			
+			levelLabel[i].setPreferredSize(new Dimension(300, 100));
+			levelLabel[i].setFont(f);
+			
+			container.add(classLabel[i]);
+			container.add(characterClass[i]);
+			container.add(levelLabel[i]);
+			container.add(characterLevel[i]);
+		}
 
+		while (multiClasses != amount && amount > multiClasses) {
+			amount--;
+			container.remove(classLabel[amount]);
+			container.remove(characterClass[amount]);
+			container.remove(characterLevel[amount]);
+			container.remove(levelLabel[amount]);
+		}
+		container.setPreferredSize(new Dimension(2400, 120 + (100 *amount)));
+		reference.validate();
+		reference.repaint();
+		
+	}
+	
+	public void setSwingCharacteristics() {
 		characterName.setPreferredSize(new Dimension(1050, 100));
 		characterName.setFont(f);
 
@@ -224,13 +573,11 @@ public class GUI extends JPanel {
 
 		ageRollSelection.setPreferredSize(new Dimension(200, 100));
 		ageRollSelection.setFont(f);
-		ageRollSelection.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
+		ageRollSelection.setBackground(lightGray);
 
 		ageInputSelection.setPreferredSize(new Dimension(240, 100));
 		ageInputSelection.setFont(f);
-		ageInputSelection.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
+		ageInputSelection.setBackground(lightGray);
 
 		ageRoll.setPreferredSize(new Dimension(150, 100));
 		ageRoll.setFont(f);
@@ -387,341 +734,32 @@ public class GUI extends JPanel {
 
 		epicFantasy.setPreferredSize(new Dimension(300, 100));
 		epicFantasy.setFont(f);
+		
+	}
 
-		// scrollBar.setPreferredSize(new Dimension(20, 500));
+	public void setPanels() {
+		frame.setPreferredSize(new Dimension(3000, 2000));
 
-		frame.add(this);
-		this.add(container);
-		// this.add(scrollBar, BorderLayout.EAST);
-		container.add(characterName);
-		container.add(alignment);
-		container.add(playerName);
-		container.add(multiClassLabel);
-		container.add(multiClass);
+		container.setBackground(lightGray);
+		container.setPreferredSize(new Dimension(2300, 120));
 
-		// for (int i = 0; i < classArray.length; i++) {
-		// reference.add(classArray[i]);
-		// classArray[i].setPreferredSize(new Dimension(1500, 100));
-		// if (i > 0) {
-		// classArray[i].setVisible(false);
-		// }
-		// classArray[i].setBackground(new Color(Colors.LIGHTGRAY.getColorR(),
-		// Colors.LIGHTGRAY.getColorG(),
-		// Colors.LIGHTGRAY.getColorB()));
-		// }
+		agePanel.setBackground(lightGray);
+		agePanel.setPreferredSize(new Dimension(2400, 120));
 
-		multiClass.addActionListener(new ActionListener() {
+		heightPanel.setBackground(lightGray);
+		heightPanel.setPreferredSize(new Dimension(1200, 120));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int amount = 4;
-				// for (int i = 0; i < (int) multiClass.getSelectedItem(); i++)
-				// {
-				//
-				// classArray[i].setVisible(true);
-				//
-				// while ((int) multiClass.getSelectedItem() != amount
-				// && amount > (int) multiClass.getSelectedItem()) {
-				// amount--;
-				// classArray[amount].setVisible(false);
-				// }
-				// reference.validate();
-				// }
-				Integer multiClasses = (Integer) multiClass.getSelectedItem();
-				for (int i = 0; i < multiClasses; i++) {
-					
-					characterClass[i].setPreferredSize(new Dimension(1000, 100));
-					characterClass[i].setFont(f);
-					
-					characterLevel[i].setPreferredSize(new Dimension(500, 100));
-					characterLevel[i].setFont(f);
-					
-					classLabel[i].setPreferredSize(new Dimension(300, 100));
-					classLabel[i].setFont(f);
-					
-					levelLabel[i].setPreferredSize(new Dimension(300, 100));
-					levelLabel[i].setFont(f);
-					
-					container.add(classLabel[i]);
-					container.add(characterClass[i]);
-					container.add(levelLabel[i]);
-					container.add(characterLevel[i]);
-				}
+		weightPanel.setBackground(lightGray);
+		weightPanel.setPreferredSize(new Dimension(850, 120));
 
-				while (multiClasses != amount && amount > multiClasses) {
-					amount--;
-					container.remove(classLabel[amount]);
-					container.remove(characterClass[amount]);
-					container.remove(characterLevel[amount]);
-					container.remove(levelLabel[amount]);
-				}
-				container.setPreferredSize(new Dimension(2400, 120 + (100 *amount)));
-				reference.validate();
-				reference.repaint();
-			}
-		});
+		hairPanel.setBackground(lightGray);
+		hairPanel.setPreferredSize(new Dimension(900, 120));
 
-		race.addActionListener(new ActionListener() {
+		eyePanel.setBackground(lightGray);
+		eyePanel.setPreferredSize(new Dimension(900, 120));
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				size.setText("Size: " + getCharacterSize());
-
-			}
-		});
-
-		this.add(agePanel);
-		this.add(heightPanel);
-		this.add(weightPanel);
-		this.add(hairPanel);
-		this.add(eyePanel);
-		this.add(abilityPanel);
-		agePanel.add(raceLabel);
-		agePanel.add(race);
-		agePanel.add(size);
-		agePanel.add(genderLabel);
-		agePanel.add(gender);
-		agePanel.add(ageRollSelection);
-		agePanel.add(ageInputSelection);
-
-		// Checks to see if the roll JRadioButton has been selected
-		ageRollSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (ageRollSelection.isSelected()) {
-					agePanel.setPreferredSize(new Dimension(2400, 220));
-					agePanel.remove(ageInput);
-					agePanel.add(intuitive);
-					agePanel.add(selfTaught);
-					agePanel.add(trained);
-					agePanel.add(ageRoll);
-					reference.validate();
-					reference.repaint();
-				}
-				// Checks if the Age JButton has been pressed
-				ageRoll.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						age = getAgeRoll(intuitive.isSelected(), selfTaught.isSelected(), trained.isSelected());
-						agePanel.setPreferredSize(new Dimension(2400, 120));
-						agePanel.add(ageLabel);
-						agePanel.add(ageInput);
-						agePanel.remove(ageRollSelection);
-						agePanel.remove(ageInputSelection);
-						agePanel.remove(intuitive);
-						agePanel.remove(selfTaught);
-						agePanel.remove(trained);
-						agePanel.remove(ageRoll);
-						ageInput.setText(String.valueOf(age));
-						reference.validate();
-						reference.repaint();
-					}
-
-				});
-
-			}
-		});
-
-		ageInputSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (ageInputSelection.isSelected()) {
-					agePanel.remove(intuitive);
-					agePanel.remove(selfTaught);
-					agePanel.remove(trained);
-					agePanel.remove(ageRoll);
-					agePanel.add(ageInput);
-					reference.validate();
-					reference.repaint();
-				}
-				ageInput.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						agePanel.add(ageLabel);
-						agePanel.remove(ageInputSelection);
-						agePanel.remove(ageRollSelection);
-						reference.validate();
-						reference.repaint();
-					}
-				});
-			}
-		});
-
-		heightPanel.add(heightRollSelection);
-		heightPanel.add(heightInputSelection);
-
-		heightRollSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (heightRollSelection.isSelected()) {
-					heightPanel.add(heightRoll);
-					heightPanel.remove(heightInput);
-					reference.validate();
-					reference.repaint();
-				}
-				heightRoll.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						height = getHeightRoll();
-						heightPanel.add(heightLabel);
-						heightPanel.add(heightInput);
-						heightPanel.remove(heightInputSelection);
-						heightPanel.remove(heightRoll);
-						heightPanel.remove(heightRollSelection);
-						heightInput.setText(String.valueOf(height / 12 + "'" + height % 12));
-						reference.validate();
-						reference.repaint();
-					}
-				});
-			}
-		});
-
-		heightInputSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				heightPanel.add(heightInput);
-				heightPanel.remove(heightRoll);
-				reference.validate();
-				reference.repaint();
-			}
-		});
-
-		weightPanel.add(weightRollSelection);
-		weightPanel.add(weightInputSelection);
-
-		weightRollSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (weightRollSelection.isSelected()) {
-					weightPanel.add(weightRoll);
-					weightPanel.remove(weightInput);
-					reference.validate();
-					reference.repaint();
-				}
-				weightRoll.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						weight = getWeightRoll();
-						weightPanel.add(weightLabel);
-						weightPanel.add(weightInput);
-						weightPanel.remove(weightInputSelection);
-						weightPanel.remove(weightRoll);
-						weightPanel.remove(weightRollSelection);
-						weightInput.setText(String.valueOf(weight));
-						reference.validate();
-						reference.repaint();
-					}
-				});
-			}
-		});
-
-		weightInputSelection.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				weightPanel.add(weightInput);
-				weightPanel.remove(weightRoll);
-				reference.validate();
-				reference.repaint();
-			}
-		});
-
-		race.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				agePanel.remove(ageInput);
-				agePanel.remove(ageLabel);
-				agePanel.remove(ageRoll);
-				agePanel.remove(intuitive);
-				agePanel.remove(selfTaught);
-				agePanel.remove(trained);
-				agePanel.add(ageRollSelection);
-				agePanel.add(ageInputSelection);
-				agePanel.setPreferredSize(new Dimension(2400, 120));
-				heightPanel.remove(heightRoll);
-				heightPanel.remove(heightInput);
-				heightPanel.remove(heightLabel);
-				heightPanel.add(heightRollSelection);
-				heightPanel.add(heightInputSelection);
-				weightPanel.remove(weightRoll);
-				weightPanel.remove(weightInput);
-				weightPanel.remove(weightLabel);
-				weightPanel.add(weightRollSelection);
-				weightPanel.add(weightInputSelection);
-				reference.validate();
-				reference.repaint();
-
-			}
-		});
-
-		gender.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				heightPanel.remove(heightRoll);
-				heightPanel.remove(heightInput);
-				heightPanel.remove(heightLabel);
-				heightPanel.add(heightRollSelection);
-				heightPanel.add(heightInputSelection);
-				weightPanel.remove(weightRoll);
-				weightPanel.remove(weightInput);
-				weightPanel.remove(weightLabel);
-				weightPanel.add(weightRollSelection);
-				weightPanel.add(weightInputSelection);
-				reference.validate();
-				reference.repaint();
-
-			}
-		});
-
-		hairPanel.add(hairLabel);
-		hairPanel.add(hairColor);
-
-		hairColor.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Colors currentColor = (Colors) hairColor.getSelectedItem();
-				hairPanel.setBackground(
-						new Color(currentColor.getColorR(), currentColor.getColorG(), currentColor.getColorB()));
-			}
-		});
-
-		eyePanel.add(eyeLabel);
-		eyePanel.add(eyeColor);
-
-		eyeColor.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Colors currentColor = (Colors) eyeColor.getSelectedItem();
-				eyePanel.setBackground(
-						new Color(currentColor.getColorR(), currentColor.getColorG(), currentColor.getColorB()));
-
-			}
-		});
-
-		abilityPanel.add(abilityInput);
-		abilityPanel.add(abilityRoll);
-
-		reference.setBackground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		reference.setForeground(
-				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		abilitySelectionPanel.setBackground(lightGray);
+		abilitySelectionPanel.setPreferredSize(new Dimension(2400, 620));
 	}
 
 	public String getCharacterSize() {
