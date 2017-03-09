@@ -64,12 +64,12 @@ public class GUI extends JPanel {
 	JLabel genderLabel = new JLabel("Gender");
 	JLabel hairLabel = new JLabel("Hair Color");
 	JLabel eyeLabel = new JLabel("Eye Color");
-	JLabel strengthLabel = new JLabel("<html>Str<br>Strength</html>");
-	JLabel dexterityLabel = new JLabel("<html>Dex<br>Dexterity</html>");
-	JLabel constitutionLabel = new JLabel("<html>Con<br>Constitution</html>");
-	JLabel intelligenceLabel = new JLabel("<html>Int<br>Intelligence</html>");
-	JLabel wisdomLabel = new JLabel("<html>Wis<br>Wisdom</html>");
-	JLabel charismaLabel = new JLabel("<html>Cha<br>Charisma</html>");
+	JLabel strengthLabel = new JLabel("<html><font size=\"60\">Str</font><br>Strength</html>");
+	JLabel dexterityLabel = new JLabel("<html><font size=\"60\">Dex</font><br>Dexterity</html>");
+	JLabel constitutionLabel = new JLabel("<html><font size=\"60\">Con</font><br>Constitution</html>");
+	JLabel intelligenceLabel = new JLabel("<html><font size=\"60\">Int</font><br>Intelligence</html>");
+	JLabel wisdomLabel = new JLabel("<html><font size=\"60\">Wis</font><br>Wisdom</html>");
+	JLabel charismaLabel = new JLabel("<html><font size=\"60\">Cha</font><br>Charisma</html>");
 	JLabel fantasyPointsLabel = new JLabel();
 	JLabel freePointsLavel = new JLabel();
 	JLabel strengthModifierLabel = new JLabel();
@@ -340,11 +340,41 @@ public class GUI extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				physicalAbilityPanel.remove(strengthLabel);
+				physicalAbilityPanel.remove(strengthRoll);
+				physicalAbilityPanel.remove(dexterityLabel);
+				physicalAbilityPanel.remove(dexterityRoll);
+				physicalAbilityPanel.remove(constitutionLabel);
+				physicalAbilityPanel.remove(constitutionRoll);
+				
+				mentalAbilityPanel.remove(intelligenceLabel);
+				mentalAbilityPanel.remove(intelligenceRoll);
+				mentalAbilityPanel.remove(wisdomLabel);
+				mentalAbilityPanel.remove(wisdomRoll);
+				mentalAbilityPanel.remove(charismaLabel);
+				mentalAbilityPanel.remove(charismaRoll);
+				
 				abilitySelectionPanel.add(lowFantasy);
 				abilitySelectionPanel.add(standardFantasy);
 				abilitySelectionPanel.add(highFantasy);
 				abilitySelectionPanel.add(epicFantasy);
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 220));
+				
+				physicalAbilityPanel.add(strengthLabel);
+				physicalAbilityPanel.add(strengthSpinner);
+				physicalAbilityPanel.add(dexterityLabel);
+				physicalAbilityPanel.add(dexteritySpinner);
+				physicalAbilityPanel.add(constitutionLabel);
+				physicalAbilityPanel.add(constitutionSpinner);
+				
+				mentalAbilityPanel.add(intelligenceLabel);
+				mentalAbilityPanel.add(intelligenceSpinner);
+				mentalAbilityPanel.add(wisdomLabel);
+				mentalAbilityPanel.add(wisdomSpinner);
+				mentalAbilityPanel.add(charismaLabel);
+				mentalAbilityPanel.add(charismaSpinner);
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -354,22 +384,44 @@ public class GUI extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				abilitySelectionPanel.remove(lowFantasy);
+				abilitySelectionPanel.remove(standardFantasy);
+				abilitySelectionPanel.remove(highFantasy);
+				abilitySelectionPanel.remove(epicFantasy);
+				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 120));
 				
+				physicalAbilityPanel.remove(strengthLabel);
+				physicalAbilityPanel.remove(strengthSpinner);
+				physicalAbilityPanel.remove(dexterityLabel);
+				physicalAbilityPanel.remove(dexteritySpinner);
+				physicalAbilityPanel.remove(constitutionLabel);
+				physicalAbilityPanel.remove(constitutionSpinner);
+				
+				mentalAbilityPanel.remove(intelligenceLabel);
+				mentalAbilityPanel.remove(intelligenceSpinner);
+				mentalAbilityPanel.remove(wisdomLabel);
+				mentalAbilityPanel.remove(wisdomSpinner);
+				mentalAbilityPanel.remove(charismaLabel);
+				mentalAbilityPanel.remove(charismaSpinner);
+				
+				physicalAbilityPanel.add(strengthLabel);
+				physicalAbilityPanel.add(strengthRoll);
+				physicalAbilityPanel.add(dexterityLabel);
+				physicalAbilityPanel.add(dexterityRoll);
+				physicalAbilityPanel.add(constitutionLabel);
+				physicalAbilityPanel.add(constitutionRoll);
+				
+				mentalAbilityPanel.add(intelligenceLabel);
+				mentalAbilityPanel.add(intelligenceRoll);
+				mentalAbilityPanel.add(wisdomLabel);
+				mentalAbilityPanel.add(wisdomRoll);
+				mentalAbilityPanel.add(charismaLabel);
+				mentalAbilityPanel.add(charismaRoll);
+				
+				reference.validate();
+				reference.repaint();
 			}
 		});
-		
-		physicalAbilityPanel.add(strengthLabel);
-		physicalAbilityPanel.add(strengthSpinner);
-		physicalAbilityPanel.add(dexterityLabel);
-		physicalAbilityPanel.add(dexteritySpinner);
-		physicalAbilityPanel.add(constitutionLabel);
-		physicalAbilityPanel.add(constitutionSpinner);
-		mentalAbilityPanel.add(intelligenceLabel);
-		mentalAbilityPanel.add(intelligenceSpinner);
-		mentalAbilityPanel.add(wisdomLabel);
-		mentalAbilityPanel.add(wisdomSpinner);
-		mentalAbilityPanel.add(charismaLabel);
-		mentalAbilityPanel.add(charismaSpinner);
 
 		reference.setBackground(lightGray);
 		reference.setForeground(lightGray);
@@ -703,33 +755,39 @@ public class GUI extends JPanel {
 		charismaSpinner.setPreferredSize(new Dimension(100, 150));
 		charismaSpinner.setFont(f);
 
-		strengthLabel.setPreferredSize(new Dimension(200, 250));
+		strengthLabel.setPreferredSize(new Dimension(200, 200));
 		strengthLabel.setFont(f);
+		strengthLabel.setOpaque(true);
 		strengthLabel.setBackground(black);
 		strengthLabel.setForeground(white);
 
-		dexterityLabel.setPreferredSize(new Dimension(200, 250));
+		dexterityLabel.setPreferredSize(new Dimension(200, 200));
 		dexterityLabel.setFont(f);
+		dexterityLabel.setOpaque(true);
 		dexterityLabel.setBackground(black);
 		dexterityLabel.setForeground(white);
 
-		constitutionLabel.setPreferredSize(new Dimension(220, 250));
+		constitutionLabel.setPreferredSize(new Dimension(220, 200));
 		constitutionLabel.setFont(f);
+		constitutionLabel.setOpaque(true);
 		constitutionLabel.setBackground(black);
 		constitutionLabel.setForeground(white);
 
-		intelligenceLabel.setPreferredSize(new Dimension(200, 250));
+		intelligenceLabel.setPreferredSize(new Dimension(200, 200));
 		intelligenceLabel.setFont(f);
+		intelligenceLabel.setOpaque(true);
 		intelligenceLabel.setBackground(black);
 		intelligenceLabel.setForeground(white);
 
-		wisdomLabel.setPreferredSize(new Dimension(200, 250));
+		wisdomLabel.setPreferredSize(new Dimension(200, 200));
 		wisdomLabel.setFont(f);
+		wisdomLabel.setOpaque(true);
 		wisdomLabel.setBackground(black);
 		wisdomLabel.setForeground(white);
 
-		charismaLabel.setPreferredSize(new Dimension(200, 250));
+		charismaLabel.setPreferredSize(new Dimension(200, 200));
 		charismaLabel.setFont(f);
+		charismaLabel.setOpaque(true);
 		charismaLabel.setBackground(black);
 		charismaLabel.setForeground(white);
 
@@ -750,6 +808,24 @@ public class GUI extends JPanel {
 
 		charismaInput.setPreferredSize(new Dimension(100, 150));
 		charismaInput.setFont(f);
+		
+		strengthRoll.setPreferredSize(new Dimension(200, 150));
+		strengthRoll.setFont(f);
+		
+		dexterityRoll.setPreferredSize(new Dimension(200, 150));
+		dexterityRoll.setFont(f);
+		
+		constitutionRoll.setPreferredSize(new Dimension(250, 150));
+		constitutionRoll.setFont(f);
+
+		intelligenceRoll.setPreferredSize(new Dimension(250, 150));
+		intelligenceRoll.setFont(f);
+		
+		wisdomRoll.setPreferredSize(new Dimension(200, 150));
+		wisdomRoll.setFont(f);
+		
+		charismaRoll.setPreferredSize(new Dimension(220, 150));
+		charismaRoll.setFont(f);
 
 		abilitySelection.add(abilityRoll);
 		abilitySelection.add(abilityInput);
