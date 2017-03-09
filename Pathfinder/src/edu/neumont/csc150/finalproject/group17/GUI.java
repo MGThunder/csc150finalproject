@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import edu.neumont.csc110.finalproject.group36.Colors;
-
 public class GUI extends JPanel {
 
 	JFrame frame = new JFrame("Pathfinder Character Sheet");
@@ -25,6 +23,7 @@ public class GUI extends JPanel {
 	JPanel weightPanel = new JPanel();
 	JPanel hairPanel = new JPanel();
 	JPanel eyePanel = new JPanel();
+	JPanel abilityPanel = new JPanel();
 
 	JTextField characterName = new JTextField("Character Name");
 	JTextField alignment = new JTextField("Alignment");
@@ -34,6 +33,18 @@ public class GUI extends JPanel {
 	JTextField ageInput = new JTextField("Age");
 	JTextField heightInput = new JTextField("Height");
 	JTextField weightInput = new JTextField("Weight");
+	JTextField strengthInput = new JTextField();
+	JTextField dexterityInput = new JTextField();
+	JTextField constitutionInput = new JTextField();
+	JTextField intelligenceInput = new JTextField();
+	JTextField wisdomInput = new JTextField();
+	JTextField charismaInput = new JTextField();
+	JTextField temporaryStrengthInput = new JTextField();
+	JTextField temporaryDexterityInput = new JTextField();
+	JTextField temporaryConstitutionInput = new JTextField();
+	JTextField temporaryIntelligenceInput = new JTextField();
+	JTextField temporaryWisdomInput = new JTextField();
+	JTextField temporaryCharismaInput = new JTextField();
 
 	JComboBox<String> gender = new JComboBox<>(new String[] { "Female", "Male" });
 	JComboBox<Enum> race = new JComboBox<>(Races.values());
@@ -50,10 +61,24 @@ public class GUI extends JPanel {
 	JLabel genderLabel = new JLabel("Gender");
 	JLabel hairLabel = new JLabel("Hair Color");
 	JLabel eyeLabel = new JLabel("Eye Color");
+	JLabel strengthLabel = new JLabel("<html>Str<br>Strength</html>");
+	JLabel dexterityLabel = new JLabel("<html>Dex<br>Dexterity</html>");
+	JLabel constitutionLabel = new JLabel("<html>Con<br>Constitution</html>");
+	JLabel intelligenceLabel = new JLabel("<html>Int<br>Intelligence</html>");
+	JLabel wisdomLabel = new JLabel("<html>Wis<br>Wisdom</html>");
+	JLabel charismaLabel = new JLabel("<html>Cha<br>Charisma</html>");
+	JLabel fantasyPointsLabel = new JLabel();
+	JLabel freePointsLavel = new JLabel();
 
 	JButton ageRoll = new JButton("Age");
 	JButton heightRoll = new JButton("Height");
 	JButton weightRoll = new JButton("Weight");
+	JButton strengthRoll = new JButton("Strength");
+	JButton dexterityRoll = new JButton("Dexterity");
+	JButton constitutionRoll = new JButton("Constitution");
+	JButton intelligenceRoll = new JButton("Intelligence");
+	JButton wisdomRoll = new JButton("Wisdom");
+	JButton charismaRoll = new JButton("Charisma");
 
 	JRadioButton ageRollSelection = new JRadioButton("Roll Age");
 	JRadioButton ageInputSelection = new JRadioButton("Input Age");
@@ -64,13 +89,39 @@ public class GUI extends JPanel {
 	JRadioButton heightInputSelection = new JRadioButton("Input Height");
 	JRadioButton weightRollSelection = new JRadioButton("Roll Weight");
 	JRadioButton weightInputSelection = new JRadioButton("Input Weight");
+	JRadioButton abilityInput = new JRadioButton("Input Ability Scores");
+	JRadioButton abilityRoll = new JRadioButton("Roll Ability Scores");
+	JRadioButton lowFantasy = new JRadioButton("Low Fantasy: 10 points");
+	JRadioButton standardFantasy = new JRadioButton("Standard Fantasy: 15 points");
+	JRadioButton highFantasy = new JRadioButton("High Fantasy: 20 points");
+	JRadioButton epicFantasy = new JRadioButton("Epic Fantasy: 25 points");
 
 	ButtonGroup ageRollOrInput = new ButtonGroup();
 	ButtonGroup ageRange = new ButtonGroup();
 	ButtonGroup heightRollOrInput = new ButtonGroup();
 	ButtonGroup weightRollOrInput = new ButtonGroup();
+	ButtonGroup abilitySelection = new ButtonGroup();
+	ButtonGroup fantasySelection = new ButtonGroup();
 
-	Classes[] classArray = new Classes[] { new Classes(), new Classes(), new Classes(), new Classes() };
+	JSpinner strengthSpinner = new JSpinner();
+	JSpinner dexteritySpinner = new JSpinner();
+	JSpinner constitutionSpinner = new JSpinner();
+	JSpinner intelligenceSpinner = new JSpinner();
+	JSpinner wisdomSpinner = new JSpinner();
+	JSpinner charismaSpinner = new JSpinner();
+
+	// Classes[] classArray = new Classes[] { new Classes(), new Classes(), new
+	// Classes(), new Classes() };
+	Integer[] levelRange = new Integer[20];
+
+	JLabel[] classLabel = new JLabel[] { new JLabel("Character Class"), new JLabel("Character Class"), new JLabel("Character Class"),
+			new JLabel("Character Class"), };
+	JLabel[] levelLabel = new JLabel[] { new JLabel("Character Level"), new JLabel("Character Level"), new JLabel("Character Level"),
+			new JLabel("Character Level"), };
+
+	JComboBox[] characterClass = new JComboBox[] { new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values()),
+			new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values())};
+	JComboBox[] characterLevel;
 
 	Die diceBag = new Die();
 
@@ -81,6 +132,14 @@ public class GUI extends JPanel {
 	int age;
 	int height;
 	int weight;
+	int strength;
+	int dexterity;
+	int constitution;
+	int intelligence;
+	int wisdom;
+	int charisma;
+	int fantasyPoints;
+	int freePoints;
 
 	public static void main(String[] args) {
 		GUI nonStaticHelper = new GUI();
@@ -88,6 +147,13 @@ public class GUI extends JPanel {
 	}
 
 	public void createAndShowCharacterSheet() {
+		
+		for (int i = 0; i < levelRange.length; i++) {
+			levelRange[i] = i + 1;
+		}
+		
+		characterLevel = new JComboBox[] { new JComboBox<>(levelRange), new JComboBox<>(levelRange),
+				new JComboBox<>(levelRange), new JComboBox<>(levelRange)};
 
 		frame.setPreferredSize(new Dimension(3000, 2000));
 
@@ -95,7 +161,7 @@ public class GUI extends JPanel {
 
 		container.setBackground(
 				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
-		container.setPreferredSize(new Dimension(2400, 120));
+		container.setPreferredSize(new Dimension(2300, 120));
 
 		agePanel.setBackground(
 				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
@@ -116,6 +182,10 @@ public class GUI extends JPanel {
 		eyePanel.setBackground(
 				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
 		eyePanel.setPreferredSize(new Dimension(900, 120));
+
+		abilityPanel.setBackground(
+				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
+		abilityPanel.setPreferredSize(new Dimension(2400, 420));
 
 		characterName.setPreferredSize(new Dimension(1050, 100));
 		characterName.setFont(f);
@@ -232,6 +302,92 @@ public class GUI extends JPanel {
 		eyeColor.setPreferredSize(new Dimension(400, 100));
 		eyeColor.setFont(f);
 
+		strengthSpinner.setValue(10);
+		strengthSpinner.setPreferredSize(new Dimension(100, 100));
+		strengthSpinner.setFont(f);
+
+		dexteritySpinner.setValue(10);
+		dexteritySpinner.setPreferredSize(new Dimension(100, 100));
+		dexteritySpinner.setFont(f);
+
+		constitutionSpinner.setValue(10);
+		constitutionSpinner.setPreferredSize(new Dimension(100, 100));
+		constitutionSpinner.setFont(f);
+
+		intelligenceSpinner.setValue(10);
+		intelligenceSpinner.setPreferredSize(new Dimension(100, 100));
+		intelligenceSpinner.setFont(f);
+
+		wisdomSpinner.setValue(10);
+		wisdomSpinner.setPreferredSize(new Dimension(100, 100));
+		wisdomSpinner.setFont(f);
+
+		charismaSpinner.setValue(10);
+		charismaSpinner.setPreferredSize(new Dimension(100, 100));
+		charismaSpinner.setFont(f);
+
+		strengthLabel.setPreferredSize(new Dimension(200, 200));
+		strengthLabel.setFont(f);
+
+		dexterityLabel.setPreferredSize(new Dimension(200, 200));
+		dexterityLabel.setFont(f);
+
+		constitutionLabel.setPreferredSize(new Dimension(200, 200));
+		constitutionLabel.setFont(f);
+
+		intelligenceLabel.setPreferredSize(new Dimension(200, 200));
+		intelligenceLabel.setFont(f);
+
+		wisdomLabel.setPreferredSize(new Dimension(200, 200));
+		wisdomLabel.setFont(f);
+
+		charismaLabel.setPreferredSize(new Dimension(200, 200));
+		charismaLabel.setFont(f);
+
+		strengthInput.setPreferredSize(new Dimension(100, 100));
+		strengthInput.setFont(f);
+
+		dexterityInput.setPreferredSize(new Dimension(100, 100));
+		dexterityInput.setFont(f);
+
+		constitutionInput.setPreferredSize(new Dimension(100, 100));
+		constitutionInput.setFont(f);
+
+		intelligenceInput.setPreferredSize(new Dimension(100, 100));
+		intelligenceInput.setFont(f);
+
+		wisdomInput.setPreferredSize(new Dimension(100, 100));
+		wisdomInput.setFont(f);
+
+		charismaInput.setPreferredSize(new Dimension(100, 100));
+		charismaInput.setFont(f);
+
+		abilitySelection.add(abilityRoll);
+		abilitySelection.add(abilityInput);
+
+		abilityRoll.setPreferredSize(new Dimension(400, 100));
+		abilityRoll.setFont(f);
+
+		abilityInput.setPreferredSize(new Dimension(400, 100));
+		abilityInput.setFont(f);
+
+		fantasySelection.add(lowFantasy);
+		fantasySelection.add(standardFantasy);
+		fantasySelection.add(highFantasy);
+		fantasySelection.add(epicFantasy);
+
+		lowFantasy.setPreferredSize(new Dimension(300, 100));
+		lowFantasy.setFont(f);
+
+		standardFantasy.setPreferredSize(new Dimension(300, 100));
+		standardFantasy.setFont(f);
+
+		highFantasy.setPreferredSize(new Dimension(300, 100));
+		highFantasy.setFont(f);
+
+		epicFantasy.setPreferredSize(new Dimension(300, 100));
+		epicFantasy.setFont(f);
+
 		// scrollBar.setPreferredSize(new Dimension(20, 500));
 
 		frame.add(this);
@@ -243,40 +399,65 @@ public class GUI extends JPanel {
 		container.add(multiClassLabel);
 		container.add(multiClass);
 
-		// Classes classPanel = new Classes();
-		// classPanel.setPreferredSize(new Dimension(2400, 500));
-
-		for (int i = 0; i < classArray.length; i++) {
-			reference.add(classArray[i]);
-			classArray[i].setPreferredSize(new Dimension(1500, 100));
-			if (i > 0) {
-				classArray[i].setVisible(false);
-			}
-			classArray[i].setBackground(new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(),
-					Colors.LIGHTGRAY.getColorB()));
-		}
+		// for (int i = 0; i < classArray.length; i++) {
+		// reference.add(classArray[i]);
+		// classArray[i].setPreferredSize(new Dimension(1500, 100));
+		// if (i > 0) {
+		// classArray[i].setVisible(false);
+		// }
+		// classArray[i].setBackground(new Color(Colors.LIGHTGRAY.getColorR(),
+		// Colors.LIGHTGRAY.getColorG(),
+		// Colors.LIGHTGRAY.getColorB()));
+		// }
 
 		multiClass.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int amount = 4;
-				for (int i = 0; i < (int) multiClass.getSelectedItem(); i++) {
-
-					classArray[i].setVisible(true);
-
-					while ((int) multiClass.getSelectedItem() != amount
-							&& amount > (int) multiClass.getSelectedItem()) {
-						// reference.remove(classPanel);
-						amount--;
-						classArray[amount].setVisible(false);
-					}
-					// container.add(new JLabel("Test"));
-					// System.out.println("Testing");
-					reference.validate();
+				// for (int i = 0; i < (int) multiClass.getSelectedItem(); i++)
+				// {
+				//
+				// classArray[i].setVisible(true);
+				//
+				// while ((int) multiClass.getSelectedItem() != amount
+				// && amount > (int) multiClass.getSelectedItem()) {
+				// amount--;
+				// classArray[amount].setVisible(false);
+				// }
+				// reference.validate();
+				// }
+				Integer multiClasses = (Integer) multiClass.getSelectedItem();
+				for (int i = 0; i < multiClasses; i++) {
+					
+					characterClass[i].setPreferredSize(new Dimension(1000, 100));
+					characterClass[i].setFont(f);
+					
+					characterLevel[i].setPreferredSize(new Dimension(500, 100));
+					characterLevel[i].setFont(f);
+					
+					classLabel[i].setPreferredSize(new Dimension(300, 100));
+					classLabel[i].setFont(f);
+					
+					levelLabel[i].setPreferredSize(new Dimension(300, 100));
+					levelLabel[i].setFont(f);
+					
+					container.add(classLabel[i]);
+					container.add(characterClass[i]);
+					container.add(levelLabel[i]);
+					container.add(characterLevel[i]);
 				}
-				// reference.setLayout(new BoxLayout(reference,
-				// BoxLayout.Y_AXIS));
+
+				while (multiClasses != amount && amount > multiClasses) {
+					amount--;
+					container.remove(classLabel[amount]);
+					container.remove(characterClass[amount]);
+					container.remove(characterLevel[amount]);
+					container.remove(levelLabel[amount]);
+				}
+				container.setPreferredSize(new Dimension(2400, 120 + (100 *amount)));
+				reference.validate();
+				reference.repaint();
 			}
 		});
 
@@ -294,6 +475,7 @@ public class GUI extends JPanel {
 		this.add(weightPanel);
 		this.add(hairPanel);
 		this.add(eyePanel);
+		this.add(abilityPanel);
 		agePanel.add(raceLabel);
 		agePanel.add(race);
 		agePanel.add(size);
@@ -452,7 +634,7 @@ public class GUI extends JPanel {
 				reference.repaint();
 			}
 		});
-		
+
 		race.addActionListener(new ActionListener() {
 
 			@Override
@@ -481,9 +663,9 @@ public class GUI extends JPanel {
 
 			}
 		});
-		
+
 		gender.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				heightPanel.remove(heightRoll);
@@ -498,7 +680,7 @@ public class GUI extends JPanel {
 				weightPanel.add(weightInputSelection);
 				reference.validate();
 				reference.repaint();
-				
+
 			}
 		});
 
@@ -528,6 +710,9 @@ public class GUI extends JPanel {
 
 			}
 		});
+
+		abilityPanel.add(abilityInput);
+		abilityPanel.add(abilityRoll);
 
 		reference.setBackground(
 				new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(), Colors.LIGHTGRAY.getColorB()));
