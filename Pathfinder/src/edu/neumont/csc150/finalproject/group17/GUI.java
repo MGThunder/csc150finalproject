@@ -142,7 +142,9 @@ public class GUI extends JPanel {
 
 	JComboBox[] characterClass = new JComboBox[] { new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values()),
 			new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values()) };
-	JComboBox[] characterLevel;
+	JComboBox[] classLevel;
+	
+	JScrollPane scrollBar;
 
 	Die diceBag = new Die();
 
@@ -171,6 +173,7 @@ public class GUI extends JPanel {
 	int temporaryWisdom;
 	int temporaryCharisma;
 	int fantasyPoints;
+	int characterLevel;
 	final int abilityScoreBaseValue = 10;
 	int freePoints;
 
@@ -187,16 +190,16 @@ public class GUI extends JPanel {
 
 		setPanels();
 
-		characterLevel = new JComboBox[] { new JComboBox<>(levelRange), new JComboBox<>(levelRange),
+		classLevel = new JComboBox[] { new JComboBox<>(levelRange), new JComboBox<>(levelRange),
 				new JComboBox<>(levelRange), new JComboBox<>(levelRange) };
 
 		setSwingCharacteristics();
 
-		// scrollBar.setPreferredSize(new Dimension(20, 500));
-
-		frame.add(this);
+		scrollBar = new JScrollPane(this);
+		scrollBar.getVerticalScrollBar().setUnitIncrement(20);
+		frame.add(scrollBar);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.add(container);
-		// this.add(scrollBar, BorderLayout.EAST);
 		container.add(characterName);
 		container.add(alignment);
 		container.add(playerName);
@@ -399,7 +402,45 @@ public class GUI extends JPanel {
 				abilitySelectionPanel.add(standardFantasy);
 				abilitySelectionPanel.add(highFantasy);
 				abilitySelectionPanel.add(epicFantasy);
+				abilitySelectionPanel.add(freePointsLabel);
+				abilitySelectionPanel.add(fantasyPointsLabel);
+				freePointsLabel.setText("<html>Free points:<br>" + String.valueOf(characterLevel % 4) + "</html>");
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 220));
+				
+				lowFantasy.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+							fantasyPointsLabel.setText("<html>" + String.valueOf(10) + "points<br>remaining</html>");
+					}
+				});
+				
+				standardFantasy.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						fantasyPointsLabel.setText("<html>" + String.valueOf(15) + "points<br>remaining</html>");
+						
+					}
+				});
+				
+				highFantasy.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						fantasyPointsLabel.setText("<html>" + String.valueOf(20) + "points<br>remaining</html>");
+						
+					}
+				});
+				
+				epicFantasy.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						fantasyPointsLabel.setText("<html>" + String.valueOf(25) + "points<br>remaining</html>");
+						
+					}
+				});
 
 				physicalAbilityPanel.add(strengthLabel);
 				physicalAbilityPanel.add(strengthSpinner);
@@ -456,6 +497,7 @@ public class GUI extends JPanel {
 				abilitySelectionPanel.remove(standardFantasy);
 				abilitySelectionPanel.remove(highFantasy);
 				abilitySelectionPanel.remove(epicFantasy);
+				abilitySelectionPanel.remove(fantasyPointsLabel);
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 120));
 
 				physicalAbilityPanel.removeAll();
@@ -614,6 +656,7 @@ public class GUI extends JPanel {
 			agePanel.remove(trained);
 			agePanel.remove(ageRoll);
 			agePanel.add(ageInput);
+			agePanel.setPreferredSize(new Dimension(2400, 120));
 			reference.validate();
 			reference.repaint();
 		}
@@ -674,31 +717,33 @@ public class GUI extends JPanel {
 			characterClass[i].setPreferredSize(new Dimension(1000, 100));
 			characterClass[i].setFont(f);
 
-			characterLevel[i].setPreferredSize(new Dimension(500, 100));
-			characterLevel[i].setFont(f);
+			classLevel[i].setPreferredSize(new Dimension(500, 100));
+			classLevel[i].setFont(f);
 
-			classLabel[i].setPreferredSize(new Dimension(300, 100));
+			classLabel[i].setPreferredSize(new Dimension(400, 100));
 			classLabel[i].setFont(f);
 
-			levelLabel[i].setPreferredSize(new Dimension(300, 100));
+			levelLabel[i].setPreferredSize(new Dimension(400, 100));
 			levelLabel[i].setFont(f);
 
 			container.add(classLabel[i]);
 			container.add(characterClass[i]);
 			container.add(levelLabel[i]);
-			container.add(characterLevel[i]);
+			container.add(classLevel[i]);
+			characterLevel += (Integer)classLevel[i].getSelectedItem();
 		}
 
 		while (multiClasses != amount && amount > multiClasses) {
 			amount--;
 			container.remove(classLabel[amount]);
 			container.remove(characterClass[amount]);
-			container.remove(characterLevel[amount]);
+			container.remove(classLevel[amount]);
 			container.remove(levelLabel[amount]);
 		}
 		container.setPreferredSize(new Dimension(2400, 120 + (100 * amount)));
 		reference.validate();
 		reference.repaint();
+		reference.revalidate();
 
 	}
 
@@ -817,81 +862,81 @@ public class GUI extends JPanel {
 		eyeColor.setFont(f);
 
 		strengthSpinner.setValue(10);
-		strengthSpinner.setPreferredSize(new Dimension(100, 150));
+		strengthSpinner.setPreferredSize(new Dimension(200, 150));
 		strengthSpinner.setFont(f);
 
 		dexteritySpinner.setValue(10);
-		dexteritySpinner.setPreferredSize(new Dimension(100, 150));
+		dexteritySpinner.setPreferredSize(new Dimension(200, 150));
 		dexteritySpinner.setFont(f);
 
 		constitutionSpinner.setValue(10);
-		constitutionSpinner.setPreferredSize(new Dimension(100, 150));
+		constitutionSpinner.setPreferredSize(new Dimension(200, 150));
 		constitutionSpinner.setFont(f);
 
 		intelligenceSpinner.setValue(10);
-		intelligenceSpinner.setPreferredSize(new Dimension(100, 150));
+		intelligenceSpinner.setPreferredSize(new Dimension(200, 150));
 		intelligenceSpinner.setFont(f);
 
 		wisdomSpinner.setValue(10);
-		wisdomSpinner.setPreferredSize(new Dimension(100, 150));
+		wisdomSpinner.setPreferredSize(new Dimension(200, 150));
 		wisdomSpinner.setFont(f);
 
 		charismaSpinner.setValue(10);
-		charismaSpinner.setPreferredSize(new Dimension(100, 150));
+		charismaSpinner.setPreferredSize(new Dimension(200, 150));
 		charismaSpinner.setFont(f);
 
-		strengthLabel.setPreferredSize(new Dimension(200, 200));
+		strengthLabel.setPreferredSize(new Dimension(200, 150));
 		strengthLabel.setFont(f);
 		strengthLabel.setOpaque(true);
 		strengthLabel.setBackground(black);
 		strengthLabel.setForeground(white);
 
-		dexterityLabel.setPreferredSize(new Dimension(200, 200));
+		dexterityLabel.setPreferredSize(new Dimension(200, 150));
 		dexterityLabel.setFont(f);
 		dexterityLabel.setOpaque(true);
 		dexterityLabel.setBackground(black);
 		dexterityLabel.setForeground(white);
 
-		constitutionLabel.setPreferredSize(new Dimension(220, 200));
+		constitutionLabel.setPreferredSize(new Dimension(220, 150));
 		constitutionLabel.setFont(f);
 		constitutionLabel.setOpaque(true);
 		constitutionLabel.setBackground(black);
 		constitutionLabel.setForeground(white);
 
-		intelligenceLabel.setPreferredSize(new Dimension(200, 200));
+		intelligenceLabel.setPreferredSize(new Dimension(200, 150));
 		intelligenceLabel.setFont(f);
 		intelligenceLabel.setOpaque(true);
 		intelligenceLabel.setBackground(black);
 		intelligenceLabel.setForeground(white);
 
-		wisdomLabel.setPreferredSize(new Dimension(200, 200));
+		wisdomLabel.setPreferredSize(new Dimension(200, 150));
 		wisdomLabel.setFont(f);
 		wisdomLabel.setOpaque(true);
 		wisdomLabel.setBackground(black);
 		wisdomLabel.setForeground(white);
 
-		charismaLabel.setPreferredSize(new Dimension(200, 200));
+		charismaLabel.setPreferredSize(new Dimension(200, 150));
 		charismaLabel.setFont(f);
 		charismaLabel.setOpaque(true);
 		charismaLabel.setBackground(black);
 		charismaLabel.setForeground(white);
 
-		strengthInput.setPreferredSize(new Dimension(150, 150));
+		strengthInput.setPreferredSize(new Dimension(200, 150));
 		strengthInput.setFont(f);
 
-		dexterityInput.setPreferredSize(new Dimension(150, 150));
+		dexterityInput.setPreferredSize(new Dimension(200, 150));
 		dexterityInput.setFont(f);
 
-		constitutionInput.setPreferredSize(new Dimension(150, 150));
+		constitutionInput.setPreferredSize(new Dimension(200, 150));
 		constitutionInput.setFont(f);
 
-		intelligenceInput.setPreferredSize(new Dimension(150, 150));
+		intelligenceInput.setPreferredSize(new Dimension(200, 150));
 		intelligenceInput.setFont(f);
 
-		wisdomInput.setPreferredSize(new Dimension(150, 150));
+		wisdomInput.setPreferredSize(new Dimension(200, 150));
 		wisdomInput.setFont(f);
 
-		charismaInput.setPreferredSize(new Dimension(150, 150));
+		charismaInput.setPreferredSize(new Dimension(200, 150));
 		charismaInput.setFont(f);
 
 		strengthRoll.setPreferredSize(new Dimension(200, 150));
@@ -1021,6 +1066,12 @@ public class GUI extends JPanel {
 
 		epicFantasy.setPreferredSize(new Dimension(450, 100));
 		epicFantasy.setFont(f);
+		
+		fantasyPointsLabel.setPreferredSize(new Dimension(400, 100));
+		fantasyPointsLabel.setFont(f);
+		
+		freePointsLabel.setPreferredSize(new Dimension(300, 100));
+		freePointsLabel.setFont(f);
 
 	}
 
@@ -1029,30 +1080,39 @@ public class GUI extends JPanel {
 
 		container.setBackground(lightGray);
 		container.setPreferredSize(new Dimension(2300, 120));
+		container.setBorder(BorderFactory.createLineBorder(black));
 
 		agePanel.setBackground(lightGray);
 		agePanel.setPreferredSize(new Dimension(2400, 120));
+		agePanel.setBorder(BorderFactory.createLineBorder(black));
 
 		heightPanel.setBackground(lightGray);
 		heightPanel.setPreferredSize(new Dimension(1200, 120));
+		heightPanel.setBorder(BorderFactory.createLineBorder(black));
 
 		weightPanel.setBackground(lightGray);
 		weightPanel.setPreferredSize(new Dimension(850, 120));
+		weightPanel.setBorder(BorderFactory.createLineBorder(black));
 
 		hairPanel.setBackground(lightGray);
 		hairPanel.setPreferredSize(new Dimension(900, 120));
+		hairPanel.setBorder(BorderFactory.createLineBorder(black));
 
 		eyePanel.setBackground(lightGray);
 		eyePanel.setPreferredSize(new Dimension(900, 120));
+		eyePanel.setBorder(BorderFactory.createLineBorder(black));
 
 		abilitySelectionPanel.setBackground(lightGray);
 		abilitySelectionPanel.setPreferredSize(new Dimension(2400, 120));
+		abilitySelectionPanel.setBorder(BorderFactory.createLineBorder(black));
 
 		physicalAbilityPanel.setBackground(lightGray);
 		physicalAbilityPanel.setPreferredSize(new Dimension(2400, 400));
+		physicalAbilityPanel.setBorder(BorderFactory.createLineBorder(black));
 
 		mentalAbilityPanel.setBackground(lightGray);
 		mentalAbilityPanel.setPreferredSize(new Dimension(2400, 400));
+		mentalAbilityPanel.setBorder(BorderFactory.createLineBorder(black));
 	}
 
 	public String getCharacterSize() {
