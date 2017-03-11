@@ -12,6 +12,8 @@ import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class GUI extends JPanel {
 
@@ -143,7 +145,7 @@ public class GUI extends JPanel {
 	JComboBox[] characterClass = new JComboBox[] { new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values()),
 			new JComboBox<>(Classes.values()), new JComboBox<>(Classes.values()) };
 	JComboBox[] classLevel;
-	
+
 	JScrollPane scrollBar;
 
 	Die diceBag = new Die();
@@ -157,23 +159,33 @@ public class GUI extends JPanel {
 	Color black = new Color(Colors.BLACK.getColorR(), Colors.BLACK.getColorG(), Colors.BLACK.getColorB());
 	Color white = new Color(Colors.WHITE.getColorR(), Colors.WHITE.getColorG(), Colors.WHITE.getColorB());
 
+	int[] abilityScore = new int[] { 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+	int[] abilityCost = new int[] { -4, -2, -1, 0, 1, 2, 3, 5, 7, 10, 13, 17 };
+
 	int age;
 	int height;
 	int weight;
-	int strength;
-	int dexterity;
-	int constitution;
-	int intelligence;
-	int wisdom;
-	int charisma;
-	int temporaryStrength;
-	int temporaryDexterity;
-	int temporaryConstitution;
-	int temporaryIntelligence;
-	int temporaryWisdom;
-	int temporaryCharisma;
+	int strengthModifier;
+	int dexterityModifier;
+	int constitutionModifier;
+	int intelligenceModifier;
+	int wisdomModifier;
+	int charismaModifier;
+	int temporaryStrengthModifier;
+	int temporaryDexterityModifier;
+	int temporaryConstitutionModifier;
+	int temporaryIntelligenceModifier;
+	int temporaryWisdomModifier;
+	int temporaryCharismaModifier;
 	int fantasyPoints;
 	int characterLevel;
+	int strengthPoints;
+	int dexterityPoints;
+	int constitutionPoints;
+	int intelligencePoints;
+	int wisdomPoints;
+	int charismaPoints;
+	int totalPoints;
 	final int abilityScoreBaseValue = 10;
 	int freePoints;
 
@@ -347,48 +359,19 @@ public class GUI extends JPanel {
 		abilitySelectionPanel.add(abilityInput);
 		abilitySelectionPanel.add(abilityRoll);
 
-		physicalAbilityPanel.add(strengthLabel);
-		physicalAbilityPanel.add(strengthInput);
-		physicalAbilityPanel.add(strengthModifierLabel);
-		physicalAbilityPanel.add(temporaryStrengthLabel);
-		physicalAbilityPanel.add(temporaryStrengthInput);
-		physicalAbilityPanel.add(temporaryStrengthModifierLabel);
+		abilitySelection();
 
-		physicalAbilityPanel.add(dexterityLabel);
-		physicalAbilityPanel.add(dexterityInput);
-		physicalAbilityPanel.add(dexterityModifierLabel);
-		physicalAbilityPanel.add(temporaryDexterityLabel);
-		physicalAbilityPanel.add(temporaryDexterityInput);
-		physicalAbilityPanel.add(temporaryDexterityModifierLabel);
+		abilitySpinnerListener();
 
-		physicalAbilityPanel.add(constitutionLabel);
-		physicalAbilityPanel.add(constitutionInput);
-		physicalAbilityPanel.add(constitutionModifierLabel);
-		physicalAbilityPanel.add(temporaryConstitutionLabel);
-		physicalAbilityPanel.add(temporaryConstitutionInput);
-		physicalAbilityPanel.add(temporaryConstitutionModifierLabel);
+		reference.setBackground(lightGray);
+		reference.setForeground(lightGray);
 
-		mentalAbilityPanel.add(intelligenceLabel);
-		mentalAbilityPanel.add(intelligenceInput);
-		mentalAbilityPanel.add(intelligenceModifierLabel);
-		mentalAbilityPanel.add(temporaryIntelligenceLabel);
-		mentalAbilityPanel.add(temporaryIntelligenceInput);
-		mentalAbilityPanel.add(temporaryIntelligenceModifierLabel);
-
-		mentalAbilityPanel.add(wisdomLabel);
-		mentalAbilityPanel.add(wisdomInput);
-		mentalAbilityPanel.add(wisdomModifierLabel);
-		mentalAbilityPanel.add(temporaryWisdomLabel);
-		mentalAbilityPanel.add(temporaryWisdomInput);
-		mentalAbilityPanel.add(temporaryWisdomModifierLabel);
-
-		mentalAbilityPanel.add(charismaLabel);
-		mentalAbilityPanel.add(charismaInput);
-		mentalAbilityPanel.add(charismaModifierLabel);
-		mentalAbilityPanel.add(temporaryCharismaLabel);
-		mentalAbilityPanel.add(temporaryCharismaInput);
-		mentalAbilityPanel.add(temporaryCharismaModifierLabel);
-
+		frame.pack();
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private void abilitySelection() {
 		abilityInput.addActionListener(new ActionListener() {
 
 			@Override
@@ -406,41 +389,8 @@ public class GUI extends JPanel {
 				abilitySelectionPanel.add(fantasyPointsLabel);
 				freePointsLabel.setText("<html>Free points:<br>" + String.valueOf(characterLevel % 4) + "</html>");
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 220));
-				
-				lowFantasy.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-							fantasyPointsLabel.setText("<html>" + String.valueOf(10) + "points<br>remaining</html>");
-					}
-				});
-				
-				standardFantasy.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						fantasyPointsLabel.setText("<html>" + String.valueOf(15) + "points<br>remaining</html>");
-						
-					}
-				});
-				
-				highFantasy.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						fantasyPointsLabel.setText("<html>" + String.valueOf(20) + "points<br>remaining</html>");
-						
-					}
-				});
-				
-				epicFantasy.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						fantasyPointsLabel.setText("<html>" + String.valueOf(25) + "points<br>remaining</html>");
-						
-					}
-				});
+
+				fantasySelection();
 
 				physicalAbilityPanel.add(strengthLabel);
 				physicalAbilityPanel.add(strengthSpinner);
@@ -488,7 +438,7 @@ public class GUI extends JPanel {
 				reference.repaint();
 			}
 		});
-
+		
 		abilityRoll.addActionListener(new ActionListener() {
 
 			@Override
@@ -549,13 +499,280 @@ public class GUI extends JPanel {
 				reference.repaint();
 			}
 		});
+		
+	}
 
-		reference.setBackground(lightGray);
-		reference.setForeground(lightGray);
+	private void fantasySelection() {
+		lowFantasy.addActionListener(new ActionListener() {
 
-		frame.pack();
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fantasyPoints = 10;
+				totalPoints = 0;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				strengthSpinner.setValue(10);
+				dexteritySpinner.setValue(10);
+				constitutionSpinner.setValue(10);
+				intelligenceSpinner.setValue(10);
+				wisdomSpinner.setValue(10);
+				charismaSpinner.setValue(10);
+			}
+		});
+
+		standardFantasy.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fantasyPoints = 15;
+				totalPoints = 0;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				strengthSpinner.setValue(10);
+				dexteritySpinner.setValue(10);
+				constitutionSpinner.setValue(10);
+				intelligenceSpinner.setValue(10);
+				wisdomSpinner.setValue(10);
+				charismaSpinner.setValue(10);
+			}
+		});
+
+		highFantasy.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fantasyPoints = 20;
+				totalPoints = 0;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				strengthSpinner.setValue(10);
+				dexteritySpinner.setValue(10);
+				constitutionSpinner.setValue(10);
+				intelligenceSpinner.setValue(10);
+				wisdomSpinner.setValue(10);
+				charismaSpinner.setValue(10);
+			}
+		});
+
+		epicFantasy.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fantasyPoints = 25;
+				totalPoints = 0;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				strengthSpinner.setValue(10);
+				dexteritySpinner.setValue(10);
+				constitutionSpinner.setValue(10);
+				intelligenceSpinner.setValue(10);
+				wisdomSpinner.setValue(10);
+				charismaSpinner.setValue(10);
+			}
+		});
+		
+	}
+
+	private void abilitySpinnerListener() {
+		strengthSpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) strengthSpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						strengthPoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					strengthSpinner.setValue(7);
+				}
+				if (holder > 18) {
+					strengthSpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					strengthSpinner.setValue(holder - 1);
+					strengthPoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		dexteritySpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) dexteritySpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						dexterityPoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					dexteritySpinner.setValue(7);
+				}
+				if (holder > 18) {
+					dexteritySpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					dexteritySpinner.setValue(holder - 1);
+					dexterityPoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		constitutionSpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) constitutionSpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						constitutionPoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					constitutionSpinner.setValue(7);
+				}
+				if (holder > 18) {
+					constitutionSpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					constitutionSpinner.setValue(holder - 1);
+					constitutionPoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		intelligenceSpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) intelligenceSpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						intelligencePoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					intelligenceSpinner.setValue(7);
+				}
+				if (holder > 18) {
+					intelligenceSpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					intelligenceSpinner.setValue(holder - 1);
+					intelligencePoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
+		wisdomSpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) wisdomSpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						wisdomPoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					wisdomSpinner.setValue(7);
+				}
+				if (holder > 18) {
+					wisdomSpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					wisdomSpinner.setValue(holder - 1);
+					wisdomPoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+
+			}
+		});
+
+		charismaSpinner.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int holder = (Integer) charismaSpinner.getValue();
+				int saveI = 0;
+				for (int i = 0; i < abilityScore.length; i++) {
+					if (holder == abilityScore[i]) {
+						charismaPoints = abilityCost[i];
+						saveI = i - 1;
+					}
+				}
+				if (holder < 7) {
+					charismaSpinner.setValue(7);
+				}
+				if (holder > 18) {
+					charismaSpinner.setValue(18);
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				if (fantasyPoints - totalPoints < 0) {
+					charismaSpinner.setValue(holder - 1);
+					charismaPoints = abilityCost[saveI];
+				}
+				totalPoints = strengthPoints + dexterityPoints + constitutionPoints + intelligencePoints + wisdomPoints
+						+ charismaPoints;
+				fantasyPointsLabel
+						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				reference.validate();
+				reference.repaint();
+			}
+		});
+
 	}
 
 	private void genderActionPerform() {
@@ -730,7 +947,7 @@ public class GUI extends JPanel {
 			container.add(characterClass[i]);
 			container.add(levelLabel[i]);
 			container.add(classLevel[i]);
-			characterLevel += (Integer)classLevel[i].getSelectedItem();
+			characterLevel += (Integer) classLevel[i].getSelectedItem();
 		}
 
 		while (multiClasses != amount && amount > multiClasses) {
@@ -1006,12 +1223,14 @@ public class GUI extends JPanel {
 		constitutionModifierLabel.setPreferredSize(new Dimension(200, 200));
 		constitutionModifierLabel.setFont(f);
 		constitutionModifierLabel.setText("<html>Modifier: " + "<br>"
-				+ String.valueOf((Integer.parseInt(constitutionInput.getText()) - abilityScoreBaseValue) / 2) + "</html>");
+				+ String.valueOf((Integer.parseInt(constitutionInput.getText()) - abilityScoreBaseValue) / 2)
+				+ "</html>");
 
 		intelligenceModifierLabel.setPreferredSize(new Dimension(200, 200));
 		intelligenceModifierLabel.setFont(f);
 		intelligenceModifierLabel.setText("<html>Modifier: " + "<br>"
-				+ String.valueOf((Integer.parseInt(intelligenceInput.getText()) - abilityScoreBaseValue) / 2) + "</html>");
+				+ String.valueOf((Integer.parseInt(intelligenceInput.getText()) - abilityScoreBaseValue) / 2)
+				+ "</html>");
 
 		wisdomModifierLabel.setPreferredSize(new Dimension(200, 200));
 		wisdomModifierLabel.setFont(f);
@@ -1066,10 +1285,10 @@ public class GUI extends JPanel {
 
 		epicFantasy.setPreferredSize(new Dimension(450, 100));
 		epicFantasy.setFont(f);
-		
+
 		fantasyPointsLabel.setPreferredSize(new Dimension(400, 100));
 		fantasyPointsLabel.setFont(f);
-		
+
 		freePointsLabel.setPreferredSize(new Dimension(300, 100));
 		freePointsLabel.setFont(f);
 
