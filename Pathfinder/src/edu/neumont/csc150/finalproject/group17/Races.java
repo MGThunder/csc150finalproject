@@ -12,6 +12,8 @@ public enum Races {
 	 * weight roll, male weight dice sides, female weight dice sides, weightMultiplier
 	 * base male weight, base female weight
 	 */
+	
+	//@@@@ "An enum with custom data elements"
 	DWARF(0, 0, 2, 0, 2, -2, 
 			20, "Medium", new String[] { "Common", "Dwarven" }, 
 			3, 5, 7, 

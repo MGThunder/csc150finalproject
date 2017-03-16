@@ -1,15 +1,15 @@
 package edu.neumont.csc150.finalproject.group17;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -79,7 +79,6 @@ public class GUI extends JPanel {
 	JLabel temporaryWisdomLabel = new JLabel("<html>Temporary<br>Score</html>");
 	JLabel temporaryCharismaLabel = new JLabel("<html>Temporary<br>Score</html>");
 	JLabel fantasyPointsLabel = new JLabel("");
-	JLabel freePointsLabel = new JLabel("");
 	JLabel strengthModifierLabel = new JLabel("");
 	JLabel dexterityModifierLabel = new JLabel("");
 	JLabel constitutionModifierLabel = new JLabel("");
@@ -102,6 +101,8 @@ public class GUI extends JPanel {
 	JButton intelligenceRoll = new JButton("Intelligence");
 	JButton wisdomRoll = new JButton("Wisdom");
 	JButton charismaRoll = new JButton("Charisma");
+	JButton saveProgress = new JButton("Save");
+	JButton saveAbility = new JButton("Save Scores");
 
 	JRadioButton ageRollSelection = new JRadioButton("Roll Age");
 	JRadioButton ageInputSelection = new JRadioButton("Input Age");
@@ -133,8 +134,6 @@ public class GUI extends JPanel {
 	JSpinner wisdomSpinner = new JSpinner();
 	JSpinner charismaSpinner = new JSpinner();
 
-	// Classes[] classArray = new Classes[] { new Classes(), new Classes(), new
-	// Classes(), new Classes() };
 	Integer[] levelRange = new Integer[20];
 
 	JLabel[] classLabel = new JLabel[] { new JLabel("Character Class"), new JLabel("Character Class"),
@@ -150,8 +149,6 @@ public class GUI extends JPanel {
 
 	Die diceBag = new Die();
 
-	// ScrollBarPanel scrollBar = new ScrollBarPanel();
-
 	Font f = new Font("Times New Roman", Font.BOLD, 40);
 
 	Color lightGray = new Color(Colors.LIGHTGRAY.getColorR(), Colors.LIGHTGRAY.getColorG(),
@@ -165,6 +162,12 @@ public class GUI extends JPanel {
 	int age;
 	int height;
 	int weight;
+	int strength;
+	int dexterity;
+	int constitution;
+	int intelligence;
+	int wisdom;
+	int charisma;
 	int strengthModifier;
 	int dexterityModifier;
 	int constitutionModifier;
@@ -179,6 +182,12 @@ public class GUI extends JPanel {
 	int temporaryCharismaModifier;
 	int fantasyPoints;
 	int characterLevel;
+	int strengthRollValue;
+	int dexterityRollValue;
+	int constitutionRollValue;
+	int intelligenceRollValue;
+	int wisdomRollValue;
+	int charismaRollValue;
 	int strengthPoints;
 	int dexterityPoints;
 	int constitutionPoints;
@@ -187,13 +196,26 @@ public class GUI extends JPanel {
 	int charismaPoints;
 	int totalPoints;
 	final int abilityScoreBaseValue = 10;
-	int freePoints;
 
-	public static void main(String[] args) {
+	boolean isRolling;
+	boolean isInputting;
+
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		GUI nonStaticHelper = new GUI();
+		// @@@@ File reading
+		FileInputStream fileIn = new FileInputStream("characterSheet.ser");
+		ObjectInputStream in = new ObjectInputStream(fileIn);
+		in.close();
+		fileIn.close();
 		nonStaticHelper.createAndShowCharacterSheet();
 	}
 
+	// @@@@ Javadoc style documentation on an entire class (class and all its
+	// methods).
+
+	/**
+	 * Holds the method calls to create and show the character sheet
+	 */
 	public void createAndShowCharacterSheet() {
 
 		for (int i = 0; i < levelRange.length; i++) {
@@ -363,14 +385,274 @@ public class GUI extends JPanel {
 
 		abilitySpinnerListener();
 
+		saveAbilityListener();
+
 		reference.setBackground(lightGray);
 		reference.setForeground(lightGray);
+
+		this.add(saveProgress);
+
+		saveProgress.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					saveCharacterInformation();
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
 
 		frame.pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
+	private void saveAbilityListener() {
+		saveAbility.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reference.remove(abilitySelectionPanel);
+				physicalAbilityPanel.removeAll();
+				mentalAbilityPanel.removeAll();
+				reference.remove(saveAbility);
+
+				physicalAbilityPanel.add(strengthLabel);
+				physicalAbilityPanel.add(strengthInput);
+				physicalAbilityPanel.add(strengthModifierLabel);
+				physicalAbilityPanel.add(temporaryStrengthLabel);
+				physicalAbilityPanel.add(temporaryStrengthInput);
+				physicalAbilityPanel.add(temporaryStrengthModifierLabel);
+
+				physicalAbilityPanel.add(dexterityLabel);
+				physicalAbilityPanel.add(dexterityInput);
+				physicalAbilityPanel.add(dexterityModifierLabel);
+				physicalAbilityPanel.add(temporaryDexterityLabel);
+				physicalAbilityPanel.add(temporaryDexterityInput);
+				physicalAbilityPanel.add(temporaryDexterityModifierLabel);
+
+				physicalAbilityPanel.add(constitutionLabel);
+				physicalAbilityPanel.add(constitutionInput);
+				physicalAbilityPanel.add(constitutionModifierLabel);
+				physicalAbilityPanel.add(temporaryConstitutionLabel);
+				physicalAbilityPanel.add(temporaryConstitutionInput);
+				physicalAbilityPanel.add(temporaryConstitutionModifierLabel);
+
+				mentalAbilityPanel.add(intelligenceLabel);
+				mentalAbilityPanel.add(intelligenceInput);
+				mentalAbilityPanel.add(intelligenceModifierLabel);
+				mentalAbilityPanel.add(temporaryIntelligenceLabel);
+				mentalAbilityPanel.add(temporaryIntelligenceInput);
+				mentalAbilityPanel.add(temporaryIntelligenceModifierLabel);
+
+				mentalAbilityPanel.add(wisdomLabel);
+				mentalAbilityPanel.add(wisdomInput);
+				mentalAbilityPanel.add(wisdomModifierLabel);
+				mentalAbilityPanel.add(temporaryWisdomLabel);
+				mentalAbilityPanel.add(temporaryWisdomInput);
+				mentalAbilityPanel.add(temporaryWisdomModifierLabel);
+
+				mentalAbilityPanel.add(charismaLabel);
+				mentalAbilityPanel.add(charismaInput);
+				mentalAbilityPanel.add(charismaModifierLabel);
+				mentalAbilityPanel.add(temporaryCharismaLabel);
+				mentalAbilityPanel.add(temporaryCharismaInput);
+				mentalAbilityPanel.add(temporaryCharismaModifierLabel);
+
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+
+			}
+
+		});
+
+	}
+
+	private void setRacialAbilityScores(boolean isRolling, boolean isInputting) {
+		Races dropDownText = (Races) race.getSelectedItem();
+		strength = 0;
+		dexterity = 0;
+		constitution = 0;
+		intelligence = 0;
+		wisdom = 0;
+		charisma = 0;
+		if (isRolling) {
+			strength = strengthRollValue;
+			dexterity = dexterityRollValue;
+			constitution = constitutionRollValue;
+			intelligence = intelligenceRollValue;
+			wisdom = wisdomRollValue;
+			charisma = charismaRollValue;
+			if (dropDownText.equals(Races.DWARF)) {
+				strength += Races.DWARF.getStrength();
+				dexterity += Races.DWARF.getDexterity();
+				constitution += Races.DWARF.getConstitution();
+				intelligence += Races.DWARF.getIntelligence();
+				wisdom += Races.DWARF.getWisdom();
+				charisma += Races.DWARF.getCharisma();
+			} else if (dropDownText.equals(Races.ELF)) {
+				strength += Races.ELF.getStrength();
+				dexterity += Races.ELF.getDexterity();
+				constitution += Races.ELF.getConstitution();
+				intelligence += Races.ELF.getIntelligence();
+				wisdom += Races.ELF.getWisdom();
+				charisma += Races.ELF.getCharisma();
+			} else if (dropDownText.equals(Races.GNOME)) {
+				strength += Races.GNOME.getStrength();
+				dexterity += Races.GNOME.getDexterity();
+				constitution += Races.GNOME.getConstitution();
+				intelligence += Races.GNOME.getIntelligence();
+				wisdom += Races.GNOME.getWisdom();
+				charisma += Races.GNOME.getCharisma();
+			} else if (dropDownText.equals(Races.HALFELF)) {
+				strength += Races.HALFELF.getStrength();
+				dexterity += Races.HALFELF.getDexterity();
+				constitution += Races.HALFELF.getConstitution();
+				intelligence += Races.HALFELF.getIntelligence();
+				wisdom += Races.HALFELF.getWisdom();
+				charisma += Races.HALFELF.getCharisma();
+			} else if (dropDownText.equals(Races.HALFORC)) {
+				strength += Races.HALFORC.getStrength();
+				dexterity += Races.HALFORC.getDexterity();
+				constitution += Races.HALFORC.getConstitution();
+				intelligence += Races.HALFORC.getIntelligence();
+				wisdom += Races.HALFORC.getWisdom();
+				charisma += Races.HALFORC.getCharisma();
+			} else if (dropDownText.equals(Races.HALFLING)) {
+				strength += Races.HALFLING.getStrength();
+				dexterity += Races.HALFLING.getDexterity();
+				constitution += Races.HALFLING.getConstitution();
+				intelligence += Races.HALFLING.getIntelligence();
+				wisdom += Races.HALFLING.getWisdom();
+				charisma += Races.HALFLING.getCharisma();
+			} else if (dropDownText.equals(Races.HUMAN)) {
+				strength += Races.HUMAN.getStrength();
+				dexterity += Races.HUMAN.getDexterity();
+				constitution += Races.HUMAN.getConstitution();
+				intelligence += Races.HUMAN.getIntelligence();
+				wisdom += Races.HUMAN.getWisdom();
+				charisma += Races.HUMAN.getCharisma();
+			}
+		} else if (isInputting) {
+			strength += (Integer) strengthSpinner.getValue();
+			dexterity += (Integer) dexteritySpinner.getValue();
+			constitution += (Integer) constitutionSpinner.getValue();
+			intelligence += (Integer) intelligenceSpinner.getValue();
+			wisdom += (Integer) wisdomSpinner.getValue();
+			charisma += (Integer) charismaSpinner.getValue();
+			if (dropDownText.equals(Races.DWARF)) {
+				strength += Races.DWARF.getStrength();
+				dexterity += Races.DWARF.getDexterity();
+				constitution += Races.DWARF.getConstitution();
+				intelligence += Races.DWARF.getIntelligence();
+				wisdom += Races.DWARF.getWisdom();
+				charisma += Races.DWARF.getCharisma();
+			} else if (dropDownText.equals(Races.ELF)) {
+				strength += Races.ELF.getStrength();
+				dexterity += Races.ELF.getDexterity();
+				constitution += Races.ELF.getConstitution();
+				intelligence += Races.ELF.getIntelligence();
+				wisdom += Races.ELF.getWisdom();
+				charisma += Races.ELF.getCharisma();
+			} else if (dropDownText.equals(Races.GNOME)) {
+				strength += Races.GNOME.getStrength();
+				dexterity += Races.GNOME.getDexterity();
+				constitution += Races.GNOME.getConstitution();
+				intelligence += Races.GNOME.getIntelligence();
+				wisdom += Races.GNOME.getWisdom();
+				charisma += Races.GNOME.getCharisma();
+			} else if (dropDownText.equals(Races.HALFELF)) {
+				strength += Races.HALFELF.getStrength();
+				dexterity += Races.HALFELF.getDexterity();
+				constitution += Races.HALFELF.getConstitution();
+				intelligence += Races.HALFELF.getIntelligence();
+				wisdom += Races.HALFELF.getWisdom();
+				charisma += Races.HALFELF.getCharisma();
+			} else if (dropDownText.equals(Races.HALFORC)) {
+				strength += Races.HALFORC.getStrength();
+				dexterity += Races.HALFORC.getDexterity();
+				constitution += Races.HALFORC.getConstitution();
+				intelligence += Races.HALFORC.getIntelligence();
+				wisdom += Races.HALFORC.getWisdom();
+				charisma += Races.HALFORC.getCharisma();
+			} else if (dropDownText.equals(Races.HALFLING)) {
+				strength += Races.HALFLING.getStrength();
+				dexterity += Races.HALFLING.getDexterity();
+				constitution += Races.HALFLING.getConstitution();
+				intelligence += Races.HALFLING.getIntelligence();
+				wisdom += Races.HALFLING.getWisdom();
+				charisma += Races.HALFLING.getCharisma();
+			} else if (dropDownText.equals(Races.HUMAN)) {
+				strength += Races.HUMAN.getStrength();
+				dexterity += Races.HUMAN.getDexterity();
+				constitution += Races.HUMAN.getConstitution();
+				intelligence += Races.HUMAN.getIntelligence();
+				wisdom += Races.HUMAN.getWisdom();
+				charisma += Races.HUMAN.getCharisma();
+			}
+		}
+		strengthInput.setText(String.valueOf(strength));
+		dexterityInput.setText(String.valueOf(dexterity));
+		constitutionInput.setText(String.valueOf(constitution));
+		intelligenceInput.setText(String.valueOf(intelligence));
+		wisdomInput.setText(String.valueOf(wisdom));
+		charismaInput.setText(String.valueOf(charisma));
+		
+		if (strength < abilityScoreBaseValue) {	
+			strengthModifier = ((strength -abilityScoreBaseValue - 1)/2);
+		} else {
+			strengthModifier = (strength - abilityScoreBaseValue)/2;
+		}
+		if (dexterity < abilityScoreBaseValue) {			
+			dexterityModifier = ((dexterity - abilityScoreBaseValue - 1)/2);
+		} else {
+			dexterityModifier = (dexterity - abilityScoreBaseValue)/2;
+		}
+		if (constitution < abilityScoreBaseValue) {
+			constitutionModifier = ((constitution - abilityScoreBaseValue - 1)/2);
+		} else {
+			constitutionModifier = (constitution - abilityScoreBaseValue)/2;
+		}
+		if (intelligence < abilityScoreBaseValue) {
+			intelligenceModifier = ((intelligence - abilityScoreBaseValue - 1)/2);
+		} else {
+			intelligenceModifier = (intelligence - abilityScoreBaseValue)/2;			
+		}
+		if (wisdom < abilityScoreBaseValue) {			
+			wisdomModifier = ((wisdom - abilityScoreBaseValue - 1)/2);
+		} else {
+			wisdomModifier = (wisdom - abilityScoreBaseValue)/2;
+		}
+		if (charisma < abilityScoreBaseValue) {
+			charismaModifier = ((charisma - abilityScoreBaseValue - 1)/2);
+		} else {
+			charismaModifier = (charisma - 10)/2;			
+		}
+		
+		
+		strengthModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(strengthModifier) + "</html>");
+		dexterityModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(dexterityModifier) + "</html>");
+		constitutionModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(constitutionModifier) + "</html>");
+		intelligenceModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(intelligenceModifier) + "</html>");
+		wisdomModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(wisdomModifier) + "</html>");
+		charismaModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(charismaModifier) + "</html>");
+		
+		reference.validate();
+		reference.repaint();
+	}
+
+	/**
+	 * Handles the adding and removing of objects from the ability, physical,
+	 * and mental panels. Determines what to add and remove based on if roll or
+	 * input is selected.
+	 */
 	private void abilitySelection() {
 		abilityInput.addActionListener(new ActionListener() {
 
@@ -385,9 +667,9 @@ public class GUI extends JPanel {
 				abilitySelectionPanel.add(standardFantasy);
 				abilitySelectionPanel.add(highFantasy);
 				abilitySelectionPanel.add(epicFantasy);
-				abilitySelectionPanel.add(freePointsLabel);
 				abilitySelectionPanel.add(fantasyPointsLabel);
-				freePointsLabel.setText("<html>Free points:<br>" + String.valueOf(characterLevel % 4) + "</html>");
+				isInputting = true;
+				isRolling = false;
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 220));
 
 				fantasySelection();
@@ -434,11 +716,13 @@ public class GUI extends JPanel {
 				mentalAbilityPanel.add(temporaryCharismaInput);
 				mentalAbilityPanel.add(temporaryCharismaModifierLabel);
 
+				reference.add(saveAbility);
+
 				reference.validate();
 				reference.repaint();
 			}
 		});
-		
+
 		abilityRoll.addActionListener(new ActionListener() {
 
 			@Override
@@ -448,6 +732,9 @@ public class GUI extends JPanel {
 				abilitySelectionPanel.remove(highFantasy);
 				abilitySelectionPanel.remove(epicFantasy);
 				abilitySelectionPanel.remove(fantasyPointsLabel);
+				reference.remove(saveAbility);
+				isInputting = false;
+				isRolling = true;
 				abilitySelectionPanel.setPreferredSize(new Dimension(2400, 120));
 
 				physicalAbilityPanel.removeAll();
@@ -495,13 +782,201 @@ public class GUI extends JPanel {
 				mentalAbilityPanel.add(temporaryCharismaInput);
 				mentalAbilityPanel.add(temporaryCharismaModifierLabel);
 
+				abilityRoll();
+
 				reference.validate();
 				reference.repaint();
 			}
 		});
-		
+
 	}
 
+	private void abilityRoll() {
+		strengthRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				physicalAbilityPanel.remove(strengthLabel);
+				physicalAbilityPanel.remove(strengthRoll);
+				physicalAbilityPanel.remove(strengthModifierLabel);
+				physicalAbilityPanel.remove(temporaryStrengthLabel);
+				physicalAbilityPanel.remove(temporaryStrengthInput);
+				physicalAbilityPanel.remove(temporaryStrengthModifierLabel);
+
+				physicalAbilityPanel.add(strengthLabel);
+				physicalAbilityPanel.add(strengthInput);
+				physicalAbilityPanel.add(strengthModifierLabel);
+				physicalAbilityPanel.add(temporaryStrengthLabel);
+				physicalAbilityPanel.add(temporaryStrengthInput);
+				physicalAbilityPanel.add(temporaryStrengthModifierLabel);
+
+				strengthRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		dexterityRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				physicalAbilityPanel.remove(dexterityLabel);
+				physicalAbilityPanel.remove(dexterityRoll);
+				physicalAbilityPanel.remove(dexterityModifierLabel);
+				physicalAbilityPanel.remove(temporaryDexterityLabel);
+				physicalAbilityPanel.remove(temporaryDexterityInput);
+				physicalAbilityPanel.remove(temporaryDexterityModifierLabel);
+
+				physicalAbilityPanel.add(dexterityLabel);
+				physicalAbilityPanel.add(dexterityInput);
+				physicalAbilityPanel.add(dexterityModifierLabel);
+				physicalAbilityPanel.add(temporaryDexterityLabel);
+				physicalAbilityPanel.add(temporaryDexterityInput);
+				physicalAbilityPanel.add(temporaryDexterityModifierLabel);
+
+				dexterityRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+			}
+		});
+		constitutionRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				physicalAbilityPanel.remove(constitutionLabel);
+				physicalAbilityPanel.remove(constitutionRoll);
+				physicalAbilityPanel.remove(constitutionModifierLabel);
+				physicalAbilityPanel.remove(temporaryConstitutionLabel);
+				physicalAbilityPanel.remove(temporaryConstitutionInput);
+				physicalAbilityPanel.remove(temporaryConstitutionModifierLabel);
+
+				physicalAbilityPanel.add(constitutionLabel);
+				physicalAbilityPanel.add(constitutionInput);
+				physicalAbilityPanel.add(constitutionModifierLabel);
+				physicalAbilityPanel.add(temporaryConstitutionLabel);
+				physicalAbilityPanel.add(temporaryConstitutionInput);
+				physicalAbilityPanel.add(temporaryConstitutionModifierLabel);
+
+				constitutionRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+
+			}
+		});
+		intelligenceRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mentalAbilityPanel.remove(intelligenceLabel);
+				mentalAbilityPanel.remove(intelligenceRoll);
+				mentalAbilityPanel.remove(intelligenceModifierLabel);
+				mentalAbilityPanel.remove(temporaryIntelligenceLabel);
+				mentalAbilityPanel.remove(temporaryIntelligenceInput);
+				mentalAbilityPanel.remove(temporaryIntelligenceModifierLabel);
+
+				mentalAbilityPanel.add(intelligenceLabel);
+				mentalAbilityPanel.add(intelligenceInput);
+				mentalAbilityPanel.add(intelligenceModifierLabel);
+				mentalAbilityPanel.add(temporaryIntelligenceLabel);
+				mentalAbilityPanel.add(temporaryIntelligenceInput);
+				mentalAbilityPanel.add(temporaryIntelligenceModifierLabel);
+
+				intelligenceRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+
+			}
+		});
+		wisdomRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mentalAbilityPanel.remove(wisdomLabel);
+				mentalAbilityPanel.remove(wisdomRoll);
+				mentalAbilityPanel.remove(wisdomModifierLabel);
+				mentalAbilityPanel.remove(temporaryWisdomLabel);
+				mentalAbilityPanel.remove(temporaryWisdomInput);
+				mentalAbilityPanel.remove(temporaryWisdomModifierLabel);
+
+				mentalAbilityPanel.add(wisdomLabel);
+				mentalAbilityPanel.add(wisdomInput);
+				mentalAbilityPanel.add(wisdomModifierLabel);
+				mentalAbilityPanel.add(temporaryWisdomLabel);
+				mentalAbilityPanel.add(temporaryWisdomInput);
+				mentalAbilityPanel.add(temporaryWisdomModifierLabel);
+
+				wisdomRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+
+			}
+		});
+		charismaRoll.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mentalAbilityPanel.remove(charismaLabel);
+				mentalAbilityPanel.remove(charismaRoll);
+				mentalAbilityPanel.remove(charismaModifierLabel);
+				mentalAbilityPanel.remove(temporaryCharismaLabel);
+				mentalAbilityPanel.remove(temporaryCharismaInput);
+				mentalAbilityPanel.remove(temporaryCharismaModifierLabel);
+
+				mentalAbilityPanel.add(charismaLabel);
+				mentalAbilityPanel.add(charismaInput);
+				mentalAbilityPanel.add(charismaModifierLabel);
+				mentalAbilityPanel.add(temporaryCharismaLabel);
+				mentalAbilityPanel.add(temporaryCharismaInput);
+				mentalAbilityPanel.add(temporaryCharismaModifierLabel);
+
+				charismaRollValue = rollScores(4, 6);
+				
+				setRacialAbilityScores(isRolling, isInputting);
+
+				reference.validate();
+				reference.repaint();
+
+			}
+		});
+	}
+
+	private int rollScores(int diceAmount, int diceSides) {
+		int result = 0;
+		int[] diceRoll = new int[4];
+		for (int i = 0; i < diceAmount; i++) {
+			diceRoll[i] = diceBag.rollDice(diceSides);
+			result += diceRoll[i];
+		}
+		if (diceRoll[0] < diceRoll[1] && diceRoll[0] < diceRoll[2] && diceRoll[0] < diceRoll[3]) {
+			result -= diceRoll[0];
+		} else if (diceRoll[0] > diceRoll[1] && diceRoll[1] < diceRoll[2] && diceRoll[1] < diceRoll[3]) {
+			result -= diceRoll[1];
+		} else if (diceRoll[0] > diceRoll[2] && diceRoll[1] > diceRoll[2] && diceRoll[2] < diceRoll[3]) {
+			result -= diceRoll[2];
+		} else if (diceRoll[0] > diceRoll[3] && diceRoll[1] > diceRoll[3] && diceRoll[2] > diceRoll[3]) {
+			result -= diceRoll[3];
+		}
+		return result;
+	}
+
+	/**
+	 * Handles how many points the player has left depending on which option
+	 * they choose. Resets the ability scores if the fantasy is changed.
+	 */
 	private void fantasySelection() {
 		lowFantasy.addActionListener(new ActionListener() {
 
@@ -509,8 +984,7 @@ public class GUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				fantasyPoints = 10;
 				totalPoints = 0;
-				fantasyPointsLabel
-						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				fantasyPointsLabel.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
 				strengthSpinner.setValue(10);
 				dexteritySpinner.setValue(10);
 				constitutionSpinner.setValue(10);
@@ -526,8 +1000,7 @@ public class GUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				fantasyPoints = 15;
 				totalPoints = 0;
-				fantasyPointsLabel
-						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				fantasyPointsLabel.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
 				strengthSpinner.setValue(10);
 				dexteritySpinner.setValue(10);
 				constitutionSpinner.setValue(10);
@@ -543,8 +1016,7 @@ public class GUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				fantasyPoints = 20;
 				totalPoints = 0;
-				fantasyPointsLabel
-						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				fantasyPointsLabel.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
 				strengthSpinner.setValue(10);
 				dexteritySpinner.setValue(10);
 				constitutionSpinner.setValue(10);
@@ -560,8 +1032,7 @@ public class GUI extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				fantasyPoints = 25;
 				totalPoints = 0;
-				fantasyPointsLabel
-						.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
+				fantasyPointsLabel.setText("<html>" + String.valueOf(fantasyPoints) + "points<br>remaining</html>");
 				strengthSpinner.setValue(10);
 				dexteritySpinner.setValue(10);
 				constitutionSpinner.setValue(10);
@@ -570,9 +1041,14 @@ public class GUI extends JPanel {
 				charismaSpinner.setValue(10);
 			}
 		});
-		
+
 	}
 
+	/**
+	 * Handles the code for the ability spinners. Keeps the score from going
+	 * below 7 and above 18. Keeps the player from using more points than they
+	 * have available.
+	 */
 	private void abilitySpinnerListener() {
 		strengthSpinner.addChangeListener(new ChangeListener() {
 
@@ -602,6 +1078,14 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				if (holder < abilityScoreBaseValue) {	
+					strengthModifier = (holder - abilityScoreBaseValue - 1)/2;
+				} else {
+					strengthModifier = (holder - abilityScoreBaseValue)/2;
+				}
+				
+				strengthModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(strengthModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -635,6 +1119,15 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				
+				if (holder < abilityScoreBaseValue) {			
+					dexterityModifier = ((holder - abilityScoreBaseValue - 1)/2);
+				} else {
+					dexterityModifier = (holder - abilityScoreBaseValue)/2;
+				}
+				
+				dexterityModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(dexterityModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -668,6 +1161,15 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				
+				if (holder < abilityScoreBaseValue) {
+					constitutionModifier = ((holder - abilityScoreBaseValue - 1)/2);
+				} else {
+					constitutionModifier = (holder - abilityScoreBaseValue)/2;
+				}
+				
+				constitutionModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(constitutionModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -701,6 +1203,15 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				
+				if (holder < abilityScoreBaseValue) {
+					intelligenceModifier = ((holder - abilityScoreBaseValue - 1)/2);
+				} else {
+					intelligenceModifier = (holder - abilityScoreBaseValue)/2;			
+				}
+				
+				intelligenceModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(intelligenceModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -734,6 +1245,15 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				
+				if (holder < abilityScoreBaseValue) {			
+					wisdomModifier = ((holder - abilityScoreBaseValue - 1)/2);
+				} else {
+					wisdomModifier = (holder - abilityScoreBaseValue)/2;
+				}
+				
+				wisdomModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(wisdomModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 
@@ -768,6 +1288,15 @@ public class GUI extends JPanel {
 						+ charismaPoints;
 				fantasyPointsLabel
 						.setText("<html>" + String.valueOf(fantasyPoints - totalPoints) + "points<br>remaining</html>");
+				
+				if (holder < abilityScoreBaseValue) {
+					charismaModifier = ((holder - abilityScoreBaseValue - 1)/2);
+				} else {
+					charismaModifier = (holder - 10)/2;			
+				}
+				
+				charismaModifierLabel.setText("<html>Modifier:<br>" + String.valueOf(charismaModifier) + "</html>");
+				
 				reference.validate();
 				reference.repaint();
 			}
@@ -775,6 +1304,10 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for if the character gender is changed. If the gender is
+	 * changed, it resets the character's height and weight.
+	 */
 	private void genderActionPerform() {
 		heightPanel.remove(heightRoll);
 		heightPanel.remove(heightInput);
@@ -791,6 +1324,11 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for changing character race. If the race is changed, it
+	 * resets the character's age, height and weight. Prevents the player from
+	 * creating a 6'0" dwarf.
+	 */
 	private void raceActionPerform() {
 		agePanel.remove(ageInput);
 		agePanel.remove(ageLabel);
@@ -811,11 +1349,16 @@ public class GUI extends JPanel {
 		weightPanel.remove(weightLabel);
 		weightPanel.add(weightRollSelection);
 		weightPanel.add(weightInputSelection);
+		setRacialAbilityScores(isRolling, isInputting);
 		reference.validate();
 		reference.repaint();
 
 	}
 
+	/**
+	 * Holds the code for randomizing weight. If the gender or race is changed,
+	 * the player must reroll their weight.
+	 */
 	private void weightRollSelectionActionPerform() {
 		if (weightRollSelection.isSelected()) {
 			weightPanel.add(weightRoll);
@@ -841,6 +1384,10 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for randomizing height. If the gender or race is changed,
+	 * the player must reroll their height.
+	 */
 	private void heightRollSelectionActionPerform() {
 		if (heightRollSelection.isSelected()) {
 			heightPanel.add(heightRoll);
@@ -866,6 +1413,10 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for if the player wants to input a character age. Removes
+	 * age roll button and adds age text field.
+	 */
 	private void ageInputSelectionActionPerform() {
 		if (ageInputSelection.isSelected()) {
 			agePanel.remove(intuitive);
@@ -891,6 +1442,12 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for if the player wants a random age. Removes the age
+	 * input and adds an age roll button. The player is given three choices of
+	 * ages to choose from. Based on player selection, the appropriate "dice"
+	 * are "rolled" accordingly.
+	 */
 	private void ageRollSelectionActionPerform() {
 		if (ageRollSelection.isSelected()) {
 			agePanel.setPreferredSize(new Dimension(2400, 220));
@@ -925,6 +1482,12 @@ public class GUI extends JPanel {
 		});
 	}
 
+	/**
+	 * Holds the code for how many classes the player wants their character to
+	 * have. Creates class and level labels and drop boxes based on what the
+	 * player chooses. Removes labels and drop boxes if there are more than
+	 * what's selected.
+	 */
 	private void multiClassActionPerform() {
 		int amount = 4;
 
@@ -964,6 +1527,10 @@ public class GUI extends JPanel {
 
 	}
 
+	/**
+	 * Holds the code for setting the size, font, and other characteristics of
+	 * swing objects. This is excluding panels.
+	 */
 	public void setSwingCharacteristics() {
 		characterName.setPreferredSize(new Dimension(1050, 100));
 		characterName.setFont(f);
@@ -1289,11 +1856,18 @@ public class GUI extends JPanel {
 		fantasyPointsLabel.setPreferredSize(new Dimension(400, 100));
 		fantasyPointsLabel.setFont(f);
 
-		freePointsLabel.setPreferredSize(new Dimension(300, 100));
-		freePointsLabel.setFont(f);
+		saveProgress.setPreferredSize(new Dimension(700, 100));
+		saveProgress.setFont(f);
+
+		saveAbility.setPreferredSize(new Dimension(300, 100));
+		saveAbility.setFont(f);
 
 	}
 
+	/**
+	 * Holds the code for setting the size, font, and other characteristics of
+	 * panels.
+	 */
 	public void setPanels() {
 		frame.setPreferredSize(new Dimension(3000, 2000));
 
@@ -1334,6 +1908,12 @@ public class GUI extends JPanel {
 		mentalAbilityPanel.setBorder(BorderFactory.createLineBorder(black));
 	}
 
+	/**
+	 * Checks the player race selection and returns the proper size accordingly.
+	 * Method is called upon race changing.
+	 * 
+	 * @return
+	 */
 	public String getCharacterSize() {
 		String result = null;
 		Races dropDownText = (Races) race.getSelectedItem();
@@ -1357,6 +1937,16 @@ public class GUI extends JPanel {
 		return result;
 	}
 
+	/**
+	 * Checks which of the three ages are selected. Calculates the characters
+	 * age accordingly based on age rolled and base race age. Resets upon race
+	 * change.
+	 * 
+	 * @param intuitive
+	 * @param selfTaught
+	 * @param trained
+	 * @return
+	 */
 	public int getAgeRoll(boolean intuitive, boolean selfTaught, boolean trained) {
 		int result = 0;
 		Races dropDownText = (Races) race.getSelectedItem();
@@ -1442,6 +2032,13 @@ public class GUI extends JPanel {
 		return result;
 	}
 
+	/**
+	 * Checks the player race and gender and rolls the according dice.
+	 * Calculates height based on dice roll plus the race's base height. Resets
+	 * upon gender or race change.
+	 * 
+	 * @return
+	 */
 	public int getHeightRoll() {
 		int result = 0;
 		Races racesDropDownText = (Races) race.getSelectedItem();
@@ -1508,6 +2105,11 @@ public class GUI extends JPanel {
 		return result;
 	}
 
+	/**
+	 * Checks the player race and gender and rolls the according dice.
+	 * 
+	 * @return
+	 */
 	public int getWeightRoll() {
 		int result = 0;
 		Races racesDropDownText = (Races) race.getSelectedItem();
@@ -1516,70 +2118,102 @@ public class GUI extends JPanel {
 		if (racesDropDownText.equals(Races.DWARF)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.DWARF.getWeightDiceAmount(), Races.DWARF.getFemaleWeightDiceSides())
-						+ Races.DWARF.getBaseFemaleWeight());
+						* Races.DWARF.getWeightMultiplier() + Races.DWARF.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.DWARF.getWeightDiceAmount(), Races.DWARF.getMaleWeightDiceSides())
-						+ Races.DWARF.getBaseMaleWeight());
+						* Races.DWARF.getWeightMultiplier() + Races.DWARF.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.ELF)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.ELF.getWeightDiceAmount(), Races.ELF.getFemaleWeightDiceSides())
-						+ Races.ELF.getBaseFemaleWeight());
+						* Races.ELF.getWeightMultiplier() + Races.ELF.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.DWARF.getWeightDiceAmount(), Races.DWARF.getMaleWeightDiceSides())
-						+ Races.ELF.getBaseMaleWeight());
+						* Races.ELF.getWeightMultiplier() + Races.ELF.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.GNOME)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.GNOME.getWeightDiceAmount(), Races.GNOME.getFemaleWeightDiceSides())
-						+ Races.GNOME.getBaseFemaleWeight());
+						* Races.GNOME.getWeightMultiplier() + Races.GNOME.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.GNOME.getWeightDiceAmount(), Races.GNOME.getMaleWeightDiceSides())
-						+ Races.GNOME.getBaseMaleWeight());
+						* Races.GNOME.getWeightMultiplier() + Races.GNOME.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.HALFELF)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.HALFELF.getWeightDiceAmount(), Races.HALFELF.getFemaleWeightDiceSides())
-						+ Races.HALFELF.getBaseFemaleWeight());
+						* Races.HALFELF.getWeightMultiplier() + Races.HALFELF.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.HALFELF.getWeightDiceAmount(), Races.HALFELF.getMaleWeightDiceSides())
-						+ Races.HALFELF.getBaseMaleWeight());
+						* Races.HALFELF.getWeightMultiplier() + Races.HALFELF.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.HALFORC)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.HALFORC.getWeightDiceAmount(), Races.HALFORC.getFemaleWeightDiceSides())
-						+ Races.HALFORC.getBaseFemaleWeight());
+						* Races.HALFORC.getWeightMultiplier() + Races.HALFORC.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.HALFORC.getWeightDiceAmount(), Races.HALFORC.getMaleWeightDiceSides())
-						+ Races.HALFORC.getBaseMaleWeight());
+						* Races.HALFORC.getWeightMultiplier() + Races.HALFORC.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.HALFLING)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.HALFLING.getWeightDiceAmount(), Races.HALFLING.getFemaleWeightDiceSides())
-						+ Races.HALFLING.getBaseFemaleWeight());
+						* Races.HALFLING.getWeightMultiplier() + Races.HALFLING.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.HALFLING.getWeightDiceAmount(), Races.HALFLING.getMaleWeightDiceSides())
-						+ Races.HALFLING.getBaseMaleWeight());
+						* Races.HALFLING.getWeightMultiplier() + Races.HALFLING.getBaseMaleWeight());
 			}
 		} else if (racesDropDownText.equals(Races.HUMAN)) {
 			if (stringDropDownText.equals("Female")) {
 				result = (setRollResult(Races.HUMAN.getWeightDiceAmount(), Races.HUMAN.getFemaleWeightDiceSides())
-						+ Races.HUMAN.getBaseFemaleWeight());
+						* Races.HUMAN.getWeightMultiplier() + Races.HUMAN.getBaseFemaleWeight());
 			} else if (stringDropDownText.equals("Male")) {
 				result = (setRollResult(Races.HUMAN.getWeightDiceAmount(), Races.HUMAN.getMaleWeightDiceSides())
-						+ Races.HUMAN.getBaseMaleWeight());
+						* Races.HUMAN.getWeightMultiplier() + Races.HUMAN.getBaseMaleWeight());
 			}
 		}
 
 		return result;
 	}
 
+	/**
+	 * Takes in the amount of dice that need to be rolled and how many sides the
+	 * dice have. Rolls the corresponding dice and returns the result.
+	 * 
+	 * @param diceAmount
+	 * @param diceSides
+	 * @return
+	 */
 	public int setRollResult(int diceAmount, int diceSides) {
 		int result = 0;
 		for (int i = 0; i < diceAmount; i++) {
 			result += diceBag.rollDice(diceSides);
 		}
 		return result;
+	}
+
+	/**
+	 * Writes to the file characterSheet.ser. Called when the save button is
+	 * pressed.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void saveCharacterInformation() throws IOException, ClassNotFoundException {
+		// @@@@ File writing
+		FileOutputStream fileOut = new FileOutputStream("characterSheet.ser");
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		out.writeObject(characterName);
+		out.writeObject(alignment);
+		out.writeObject(playerName);
+		out.writeObject(deity);
+		out.writeObject(homeland);
+		out.writeObject(ageInput);
+		out.writeObject(heightInput);
+		out.writeObject(weightInput);
+		out.close();
+		fileOut.close();
+		System.out.printf("Serialization finished");
 	}
 
 }
